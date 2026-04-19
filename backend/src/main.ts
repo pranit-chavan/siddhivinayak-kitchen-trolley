@@ -7,9 +7,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const expressApp = app.getHttpAdapter().getInstance();
 
+  const allowedOrigins = process.env.FRONTEND_URL
+    ? [process.env.FRONTEND_URL, 'http://localhost:5173']
+    : true;
+
   app.enableCors({
-    origin: true,
-    credentials: false,
+    origin: allowedOrigins,
+    credentials: true,
   });
 
   expressApp.get('/', (_req, res) => {
