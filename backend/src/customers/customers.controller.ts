@@ -1,0 +1,26 @@
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UserRole } from '@prisma/client';
+import { Roles } from '../common/decorators/roles.decorator';
+import { CustomersService } from './customers.service';
+import { CreateCustomerDto } from './dto/create-customer.dto';
+
+@ApiTags('customers')
+@ApiBearerAuth()
+@Controller('customers')
+export class CustomersController {
+  constructor(private readonly customersService: CustomersService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'List customers' })
+  list(@Query('search') search?: string) {
+    return this.customersService.list(search);
+  }
+
+  @Post()
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
+  @ApiOperation({ summary: 'Create a customer' })
+  create(@Body() dto: CreateCustomerDto) {
+    return this.customersService.create(dto);
+  }
+}
