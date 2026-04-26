@@ -9,7 +9,7 @@ const HeroSection = () => {
       <div className="absolute top-0 right-0 -z-10 w-1/3 h-1/3 bg-primary/10 rounded-full blur-[120px] translate-x-1/2 -translate-y-1/2 animate-pulse" />
       <div className="absolute bottom-0 left-0 -z-10 w-1/4 h-1/4 bg-accent/20 rounded-full blur-[100px] -translate-x-1/3 translate-y-1/3" />
 
-      <div className="container mx-auto px-4 md:px-8 relative w-full h-full flex flex-col justify-center">
+      <div className="container mx-auto relative w-full h-full flex flex-col justify-center">
         <div className="max-w-[100%] lg:max-w-[55%] relative z-10 w-full">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}

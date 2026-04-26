@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 
@@ -54,22 +54,9 @@ export class CustomersService {
     });
 
     if (existingCustomer) {
-      return this.prisma.customer.update({
-        where: { id: existingCustomer.id },
-        data: {
-          name: dto.name.trim() || existingCustomer.name,
-          phone: dto.phone.trim() || existingCustomer.phone,
-          email:
-            dto.email?.toLowerCase() ??
-            existingCustomer.email ??
-            undefined,
-          location: dto.location ?? existingCustomer.location ?? undefined,
-          addressLine1:
-            dto.addressLine1 ?? existingCustomer.addressLine1 ?? undefined,
-          city: dto.city ?? existingCustomer.city ?? undefined,
-          notes: dto.notes ?? existingCustomer.notes ?? undefined,
-        },
-      });
+      throw new ConflictException(
+        'A customer with this phone number or email already exists',
+      );
     }
 
     return this.prisma.customer.create({

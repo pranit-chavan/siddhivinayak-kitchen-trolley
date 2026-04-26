@@ -19,7 +19,7 @@ const itemVariants = {
 
 const ProductsSection = () => {
   return (
-    <section id="products" className="py-24 px-4 md:px-8 bg-background">
+    <section id="products" className="py-24 bg-background">
       <div className="container mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -53,7 +53,7 @@ const ProductsSection = () => {
               whileHover={{ y: -10, rotateX: 2, rotateY: -2 }}
               className="group bg-muted/30 rounded-2xl overflow-hidden border border-border/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 transform-gpu preserve-3d flex flex-col"
             >
-              <div className="aspect-[4/3] overflow-hidden">
+              <div className="aspect-[3/2] overflow-hidden">
                 <img src={product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               </div>
               <div className="p-8 flex flex-col flex-1">
@@ -61,12 +61,9 @@ const ProductsSection = () => {
                 <p className="text-primary text-sm font-semibold mb-4 leading-tight">
                   {product.oneLiner}
                 </p>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-8 flex-1">
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-1">
                   {product.description}
                 </p>
-                <a href="/#contact" className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-background border border-border group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary rounded-xl font-bold transition-all duration-300 mt-auto">
-                  Get Quote
-                </a>
               </div>
             </motion.div>
           ))}

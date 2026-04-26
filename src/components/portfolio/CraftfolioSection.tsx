@@ -65,7 +65,7 @@ const CraftfolioSection = () => {
   );
 
   return (
-    <section id="craftfolio" className="py-24 px-4 md:px-8 bg-background">
+    <section id="craftfolio" className="py-24 bg-background">
       <div className="container mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-display mb-6"> Our <span className="text-primary italic">Craftfolio</span></h2>

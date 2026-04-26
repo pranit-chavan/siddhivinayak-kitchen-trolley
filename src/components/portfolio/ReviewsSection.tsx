@@ -24,7 +24,7 @@ const ReviewsSection = () => {
         `}
       </style>
 
-      <div className="container mx-auto px-4 md:px-8 mb-16">
+      <div className="container mx-auto mb-16">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

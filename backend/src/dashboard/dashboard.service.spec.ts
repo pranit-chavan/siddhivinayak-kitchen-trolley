@@ -6,8 +6,14 @@ describe('DashboardService', () => {
       project: {
         count: jest
           .fn()
+          // totalProjects
           .mockResolvedValueOnce(8)
-          .mockResolvedValueOnce(5),
+          // activeProjects
+          .mockResolvedValueOnce(5)
+          // trackerReadyProjects
+          .mockResolvedValueOnce(2)
+          // projectsInProduction
+          .mockResolvedValueOnce(3),
         findMany: jest.fn().mockResolvedValue([
           {
             id: 'project-1',
@@ -21,8 +27,12 @@ describe('DashboardService', () => {
       lead: {
         count: jest
           .fn()
+          // totalLeads
           .mockResolvedValueOnce(14)
-          .mockResolvedValueOnce(3),
+          // newLeads
+          .mockResolvedValueOnce(3)
+          // overdueFollowUps
+          .mockResolvedValueOnce(1),
         findMany: jest.fn().mockResolvedValue([
           {
             id: 'lead-1-abcdef',
@@ -35,7 +45,9 @@ describe('DashboardService', () => {
       quotation: {
         count: jest
           .fn()
+          // totalQuotations
           .mockResolvedValueOnce(11)
+          // pendingQuotations
           .mockResolvedValueOnce(4),
         aggregate: jest.fn().mockResolvedValue({
           _sum: {
@@ -65,9 +77,12 @@ describe('DashboardService', () => {
       totalProjects: 8,
       newLeads: 3,
       totalLeads: 14,
+      overdueFollowUps: 1,
       pendingQuotations: 4,
       totalQuotations: 11,
       approvedRevenue: 275000,
+      trackerReadyProjects: 2,
+      projectsInProduction: 3,
     });
 
     expect(summary.recentActivity).toEqual([

@@ -159,7 +159,7 @@ export default function Quotation() {
                <Sparkles size={12} /> Live Drafting Engine
             </div>
             <h1 className="text-3xl font-display font-bold">New Quotation</h1>
-            <p className="text-muted-foreground">Draft ID: <span className="font-bold text-foreground underline decoration-primary/30 text-xs">QUO-SVK-25-{Math.floor(100+Math.random()*900)}</span></p>
+            <p className="text-muted-foreground">Draft ID: <span className="font-bold text-foreground underline decoration-primary/30 text-xs">QUO-SVK-{String(new Date().getFullYear()).slice(2)}-{Math.floor(100+Math.random()*900)}</span></p>
           </div>
           <div className="flex gap-4">
              <button className="px-6 py-3 border border-border rounded-xl font-bold hover:bg-muted transition-all flex items-center gap-2 text-sm">

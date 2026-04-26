@@ -83,7 +83,7 @@ const Navbar = () => {
           : "bg-transparent py-4"
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between px-4 md:px-8">
+      <div className="container mx-auto flex items-center justify-between">
         {/* ── LEFT: Logo + Shop Name ── */}
         <a 
           href="/#home" 

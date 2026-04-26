@@ -55,14 +55,26 @@ export default function Production() {
   const toggleStage = (projectId: string, stageId: string) => {
     setProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
-      
+
+      const stageIndex = PRODUCTION_STAGES.findIndex(s => s.id === stageId);
       const isDone = p.completedStages.includes(stageId);
-      return {
-        ...p,
-        completedStages: isDone 
-          ? p.completedStages.filter(s => s !== stageId)
-          : [...p.completedStages, stageId]
-      };
+
+      // Un-mark: only allow removing the LAST completed stage (no skipping back)
+      if (isDone) {
+        const lastCompletedIndex = PRODUCTION_STAGES.findLastIndex(s =>
+          p.completedStages.includes(s.id)
+        );
+        if (stageIndex !== lastCompletedIndex) return p; // can't remove a middle stage
+        return { ...p, completedStages: p.completedStages.filter(s => s !== stageId) };
+      }
+
+      // Mark done: only allow the NEXT stage in sequence
+      const prevStage = PRODUCTION_STAGES[stageIndex - 1];
+      if (stageIndex > 0 && !p.completedStages.includes(prevStage.id)) {
+        return p; // previous stage not done yet
+      }
+
+      return { ...p, completedStages: [...p.completedStages, stageId] };
     }));
   };
 

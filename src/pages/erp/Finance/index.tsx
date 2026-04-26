@@ -70,7 +70,7 @@ export default function Finance() {
             <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mb-1">Total Outstanding</p>
             <p className="text-3xl font-bold font-display text-orange-700">₹2.1L</p>
             <div className="mt-4 flex items-center gap-2 text-xs text-orange-600 font-bold underline cursor-pointer">
-               View All Pending Duels
+               View All Pending Dues
             </div>
          </div>
          <div className="bg-background rounded-3xl p-8 border border-border shadow-sm group hover:border-primary/50 transition-colors">

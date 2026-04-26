@@ -1,66 +1,83 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/portfolio/Navbar";
 import Footer from "@/components/portfolio/Footer";
 import WhatsAppButton from "@/components/shared/WhatsAppButton";
-import { CheckCircle2, Box, Clock, MapPin, Layout } from "lucide-react";
-import { PROJECT_STAGES, WHATSAPP_URL, type ProjectStatus } from "@/data/constants";
+import { CheckCircle2, Box, Clock, MapPin, Layout, Loader2, AlertCircle } from "lucide-react";
+import { WHATSAPP_URL } from "@/data/constants";
 import Customer3DViewer from "@/components/shared/Customer3DViewer";
-import { LOWER_CABINETS, UPPER_CABINETS } from "@/components/erp/Design3D/furnitureData";
 
-const mockDesignItems = [
-  {
-    uid: "m1",
-    pieceId: "lower-600",
-    piece: LOWER_CABINETS[0],
-    x: 1.0, z: 0.28, rotationY: 0,
-    color: "#7a7d85", counterColor: "#1e1e1e"
-  },
-  {
-    uid: "m2",
-    pieceId: "lower-900",
-    piece: LOWER_CABINETS[1],
-    x: 1.75, z: 0.28, rotationY: 0,
-    color: "#7a7d85", counterColor: "#1e1e1e"
-  },
-  {
-    uid: "m3",
-    pieceId: "upper-600",
-    piece: UPPER_CABINETS[0],
-    x: 1.0, z: 0.18, rotationY: 0,
-    color: "#e8e8e8", counterColor: "#1e1e1e"
-  }
-];
-
-const mockProjectData = {
-  id: "SVK-2025-042",
-  customerName: "Meera Kulkarni",
-  location: "Pashan Area",
-  furnitureType: "Modular Kitchen",
-  currentStatus: "Manufacturing" as ProjectStatus,
-  progressPercent: 65,
-  lastUpdated: "2025-04-02",
-  has3DDesign: true,
-};
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
 
 export default function Tracker() {
   const { projectId } = useParams();
   const [show3D, setShow3D] = useState(false);
+  const [project, setProject] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [designItems, setDesignItems] = useState<any[]>([]);
+  const [designRoom, setDesignRoom] = useState({ roomWidth: 3.0, roomDepth: 2.4, roomHeight: 2.7, counterColor: "#1e1e1e" });
 
-  // In a real app, we would fetch live project data from the DB using the projectId.
-  const project = {
-    ...mockProjectData,
-    id: projectId || "SVK-UNKNOWN",
-  };
+  // Fetch live project data from the backend using the project code from URL
+  useEffect(() => {
+    if (!projectId) return;
 
-  if (!project) {
+    setLoading(true);
+    fetch(`${API_BASE}/projects/track/${projectId}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Project not found (${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        setProject(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message ?? "Failed to load project");
+        setLoading(false);
+      });
+  }, [projectId]);
+
+  // Fetch the published 3D design when available
+  useEffect(() => {
+    if (!project?.has3DDesign || !projectId) return;
+    fetch(`${API_BASE}/designs/published/${projectId}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setDesignItems(Array.isArray(d.items) ? d.items : []);
+        setDesignRoom({
+          roomWidth: d.roomWidth ?? 3.0,
+          roomDepth: d.roomDepth ?? 2.4,
+          roomHeight: d.roomHeight ?? 2.7,
+          counterColor: d.counterColor ?? "#1e1e1e",
+        });
+      })
+      .catch(() => {/* design load failure is non-fatal */});
+  }, [project?.has3DDesign, projectId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-40 pb-24 px-4 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4 text-muted-foreground">
+            <Loader2 size={40} className="animate-spin text-primary" />
+            <p className="font-bold">Loading your project...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !project) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
         <main className="pt-40 pb-24 px-4 text-center">
+          <AlertCircle size={48} className="mx-auto text-destructive mb-4" />
           <h1 className="text-3xl font-display mb-4">Project Not Found</h1>
           <p className="text-muted-foreground mb-8">
-            Please check the link sent to you via WhatsApp.
+            {error ?? "Please check the link sent to you via WhatsApp."}
           </p>
           <Link
             to="/"
@@ -72,8 +89,6 @@ export default function Tracker() {
       </div>
     );
   }
-
-  const currentStageIndex = PROJECT_STAGES.indexOf(project.currentStatus);
 
   return (
     <div className="min-h-screen bg-background">
@@ -99,7 +114,7 @@ export default function Tracker() {
                 <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mb-1">
                   Project ID
                 </p>
-                <p className="text-xl font-bold font-display">{project.id}</p>
+                <p className="text-xl font-bold font-display">{project.code}</p>
               </div>
             </div>
 
@@ -112,7 +127,7 @@ export default function Tracker() {
                   <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground leading-none mb-1">
                     Location
                   </p>
-                  <p className="font-bold">{project.location}</p>
+                  <p className="font-bold">{project.location ?? "N/A"}</p>
                 </div>
               </div>
               <div className="flex gap-4 items-center">
@@ -123,7 +138,15 @@ export default function Tracker() {
                   <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground leading-none mb-1">
                     Last Updated
                   </p>
-                  <p className="font-bold">{project.lastUpdated}</p>
+                  <p className="font-bold">
+                    {project.lastUpdated
+                      ? new Date(project.lastUpdated).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "—"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -133,18 +156,18 @@ export default function Tracker() {
               <div className="w-full h-3 bg-muted rounded-full overflow-hidden relative border border-border/20">
                 <div
                   className="absolute top-0 left-0 h-full bg-primary transition-all duration-1000 ease-out"
-                  style={{ width: `${project.progressPercent}%` }}
+                  style={{ width: `${project.progressPercent ?? 0}%` }}
                 />
               </div>
 
               <div className="relative flex justify-between">
-                {PROJECT_STAGES.map((stage, index) => {
-                  const isCompleted = index < currentStageIndex;
-                  const isCurrent = index === currentStageIndex;
+                {(project.timeline ?? []).map((stage: any, index: number) => {
+                  const isCompleted = stage.status === "done";
+                  const isCurrent = stage.status === "current";
 
                   return (
                     <div
-                      key={stage}
+                      key={stage.label}
                       className="flex flex-col items-center relative z-10 w-16 md:w-24"
                     >
                       <div
@@ -162,12 +185,10 @@ export default function Tracker() {
                       </div>
                       <p
                         className={`text-[9px] md:text-sm font-bold text-center transition-colors duration-300 ${
-                          isCurrent
-                            ? "text-primary"
-                            : "text-muted-foreground"
+                          isCurrent ? "text-primary" : "text-muted-foreground"
                         }`}
                       >
-                        {stage}
+                        {stage.label}
                       </p>
                     </div>
                   );
@@ -175,7 +196,7 @@ export default function Tracker() {
               </div>
             </div>
 
-            {project.currentStatus === "Completed" && project.has3DDesign && (
+            {project.has3DDesign && (
               <div className="animate-in fade-in zoom-in duration-700 mt-12 bg-primary/5 p-8 rounded-3xl border-2 border-dashed border-primary/20 text-center">
                 <Layout
                   size={48}
@@ -189,7 +210,7 @@ export default function Tracker() {
                   Sachin has finalized the 3D render of your project. Click
                   below to view the design from all angles.
                 </p>
-                <button 
+                <button
                   onClick={() => setShow3D(true)}
                   className="px-8 py-4 bg-primary text-primary-foreground rounded-full font-bold flex items-center justify-center gap-2 mx-auto hover:bg-primary/95 transition-all shadow-xl hover:shadow-primary/20"
                 >
@@ -202,11 +223,11 @@ export default function Tracker() {
 
           {show3D && (
             <Customer3DViewer
-              items={mockDesignItems as any}
-              roomWidth={3.05}
-              roomDepth={2.44}
-              roomHeight={2.74}
-              counterColor="#1e1e1e"
+              items={designItems as any}
+              roomWidth={designRoom.roomWidth}
+              roomDepth={designRoom.roomDepth}
+              roomHeight={designRoom.roomHeight}
+              counterColor={designRoom.counterColor}
               onClose={() => setShow3D(false)}
             />
           )}
