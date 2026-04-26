@@ -6,6 +6,7 @@ interface GalleryItem {
   category: "Kitchen" | "Wardrobe" | "Modular" | "Custom";
   title: string;
   location: string;
+  owner: string;
   image: string;
 }
 
@@ -14,43 +15,49 @@ const galleryItems: GalleryItem[] = [
     id: 1,
     category: "Kitchen",
     title: "L-Shaped SS Trolley",
-    location: "Pashan Area",
-    image: "https://images.unsplash.com/photo-1556911223-e455013161c3?auto=format&fit=crop&q=80",
+    location: "Nashik",
+    owner: "Ramesh Patil",
+    image: "/images/portfolio/craftfolio/kitchen-1.png",
   },
   {
     id: 2,
     category: "Modular",
     title: "Premium Modular Kitchen",
-    location: "Hadapsar Estate",
-    image: "https://images.unsplash.com/photo-1579725942955-4d8377f8c6d1?auto=format&fit=crop&q=80",
+    location: "Nashik",
+    owner: "Santosh Deshmukh",
+    image: "/images/portfolio/craftfolio/kitchen-2.png",
   },
   {
     id: 3,
     category: "Wardrobe",
     title: "Master Bedroom Wardrobe",
-    location: "Baner Heights",
-    image: "https://images.unsplash.com/photo-1595428774751-2cc67702581c?auto=format&fit=crop&q=80",
+    location: "Nashik",
+    owner: "Vishal Kadam",
+    image: "/images/portfolio/craftfolio/wardrobe-1.png",
   },
   {
     id: 4,
     category: "Custom",
     title: "Sleek TV Unit",
-    location: "Wakad Residency",
-    image: "https://images.unsplash.com/photo-1534433832410-b472094406bc?auto=format&fit=crop&q=80",
+    location: "Nashik",
+    owner: "Sunil Joshi",
+    image: "/images/portfolio/craftfolio/tv-unit.png",
   },
   {
     id: 5,
     category: "Kitchen",
     title: "Parallel Kitchen Layout",
-    location: "Kothrud Central",
-    image: "https://images.unsplash.com/photo-1556912177-3e8e192ce0ee?auto=format&fit=crop&q=80",
+    location: "Nashik",
+    owner: "Pradip Pawar",
+    image: "/images/portfolio/craftfolio/kitchen-3.png",
   },
   {
     id: 6,
     category: "Wardrobe",
     title: "Sliding Door Wardrobe",
-    location: "Aundh Avenue",
-    image: "https://images.unsplash.com/photo-1591825729269-caeb344f6df2?auto=format&fit=crop&q=80",
+    location: "Nashik",
+    owner: "Ganesh Shinde",
+    image: "/images/portfolio/craftfolio/wardrobe-2.png",
   },
 ];
 
@@ -103,12 +110,15 @@ const CraftfolioSection = () => {
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-6 text-center">
                 <Maximize2 size={32} className="mb-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all duration-500" />
                 <h3 className="text-xl font-bold mb-1">{item.title}</h3>
-                <div className="flex items-center gap-4 text-xs font-medium uppercase tracking-widest opacity-80">
+                <div className="flex flex-wrap justify-center items-center gap-3 text-xs font-medium uppercase tracking-widest opacity-80 mt-2">
                   <span className="flex items-center gap-1">
                     <Tag size={12} /> {item.category}
                   </span>
                   <span className="flex items-center gap-1">
                     <MapPin size={12} /> {item.location}
+                  </span>
+                  <span className="flex items-center gap-1 w-full justify-center opacity-70 mt-1">
+                    Client: {item.owner}
                   </span>
                 </div>
               </div>
@@ -159,6 +169,15 @@ const CraftfolioSection = () => {
                    <div>
                      <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">Location</p>
                      <p className="font-semibold">{selectedImage.location}</p>
+                   </div>
+                 </div>
+                 <div className="flex items-center gap-3">
+                   <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center border border-gray-700 text-primary">
+                     <span className="font-display text-xl leading-none pt-1">C</span>
+                   </div>
+                   <div>
+                     <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">Client</p>
+                     <p className="font-semibold">{selectedImage.owner}</p>
                    </div>
                  </div>
               </div>
