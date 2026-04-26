@@ -3,8 +3,8 @@ services:
     name: siddhivinayak-kitchen-trolley-api
     runtime: node
     rootDir: backend
-    buildCommand: npm install && npx prisma generate && npm run build
-    startCommand: npx prisma migrate deploy && node dist/main
+    buildCommand: npm install && npx prisma generate --schema=../database/schema.prisma && npm run build
+    startCommand: npx prisma migrate deploy --schema=../database/schema.prisma && node dist/main
     envVars:
       - key: NODE_ENV
         value: production
