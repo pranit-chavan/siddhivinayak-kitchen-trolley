@@ -25,7 +25,7 @@ const galleryItems: GalleryItem[] = [
     title: "Premium Modular Kitchen",
     location: "Nashik",
     owner: "Santosh Deshmukh",
-    image: "https://images.unsplash.com/photo-1556911220-bda9f7f7597e?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=800&auto=format&fit=crop&q=80",
   },
   {
     id: 3,
@@ -33,7 +33,7 @@ const galleryItems: GalleryItem[] = [
     title: "Master Bedroom Wardrobe",
     location: "Nashik",
     owner: "Vishal Kadam",
-    image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=80",
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ const galleryItems: GalleryItem[] = [
     title: "Sleek TV Unit",
     location: "Nashik",
     owner: "Sunil Joshi",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
   },
   {
     id: 5,
@@ -49,7 +49,7 @@ const galleryItems: GalleryItem[] = [
     title: "Parallel Kitchen Layout",
     location: "Nashik",
     owner: "Pradip Pawar",
-    image: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&auto=format&fit=crop&q=80&crop=entropy&w=400",
   },
   {
     id: 6,
@@ -57,7 +57,7 @@ const galleryItems: GalleryItem[] = [
     title: "Sliding Door Wardrobe",
     location: "Nashik",
     owner: "Ganesh Shinde",
-    image: "https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop&q=80",
   },
 ];
 
