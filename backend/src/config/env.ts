@@ -1,6 +1,5 @@
 type Environment = {
   DATABASE_URL: string;
-  DIRECT_URL: string;
   JWT_SECRET: string;
   JWT_EXPIRES_IN: string;
   PORT: string;
@@ -9,7 +8,6 @@ type Environment = {
 export function validateEnv(config: Record<string, unknown>): Environment {
   const requiredKeys = [
     'DATABASE_URL',
-    'DIRECT_URL',
     'JWT_SECRET',
     'JWT_EXPIRES_IN',
   ] as const;
@@ -27,7 +25,6 @@ export function validateEnv(config: Record<string, unknown>): Environment {
 
   return {
     DATABASE_URL: String(config.DATABASE_URL),
-    DIRECT_URL: String(config.DIRECT_URL),
     JWT_SECRET: String(config.JWT_SECRET),
     JWT_EXPIRES_IN: String(config.JWT_EXPIRES_IN),
     PORT: String(config.PORT ?? '4000'),
