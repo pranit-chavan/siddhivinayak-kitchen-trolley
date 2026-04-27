@@ -34,20 +34,7 @@ const PRODUCTION_STAGES = [
   { id: "ready", label: "Ready for Delivery", icon: Truck },
 ];
 
-const initialProduction = [
-  {
-    id: "SVK-2025-042",
-    customer: "Meera Kulkarni",
-    type: "Modular Kitchen",
-    completedStages: ["material_ordered", "material_received", "cutting", "lamination"],
-  },
-  {
-    id: "SVK-2025-045",
-    customer: "Amit Wagh",
-    type: "Custom Cupboards",
-    completedStages: ["material_ordered", "material_received"],
-  },
-];
+const initialProduction: any[] = [];
 
 export default function Production() {
   const [projects, setProjects] = useState(initialProduction);

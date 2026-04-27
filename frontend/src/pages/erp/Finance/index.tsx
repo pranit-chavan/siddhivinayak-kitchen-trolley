@@ -4,11 +4,7 @@ import { ArrowUpRight, ArrowDownRight, IndianRupee, FileText, Download, MoreVert
 import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-const dummyPayments = [
-  { id: "1", customer: "Meera Kulkarni", amount: 45000, mode: "UPI", type: "Advance", date: "2025-04-02" },
-  { id: "2", customer: "Amit Wagh", amount: 15000, mode: "CASH", type: "Advance", date: "2025-04-01" },
-  { id: "3", customer: "Rahul Deshmukh", amount: 85000, mode: "BANK TRANSFER", type: "Final Balance", date: "2025-03-28" },
-];
+const dummyPayments: any[] = [];
 
 const chartData = [
   { name: 'Raw Materials', value: 45, color: '#6366f1' },

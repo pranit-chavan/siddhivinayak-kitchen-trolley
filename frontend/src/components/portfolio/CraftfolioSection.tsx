@@ -17,7 +17,7 @@ const galleryItems: GalleryItem[] = [
     title: "L-Shaped SS Trolley",
     location: "Nashik",
     owner: "Ramesh Patil",
-    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&auto=format&fit=crop&q=80",
+    image: "/images/portfolio/craftfolio/l-shaped-kitchen.png",
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const galleryItems: GalleryItem[] = [
     title: "Premium Modular Kitchen",
     location: "Nashik",
     owner: "Santosh Deshmukh",
-    image: "https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=800&auto=format&fit=crop&q=80",
+    image: "/images/portfolio/craftfolio/premium-modular-kitchen.png",
   },
   {
     id: 3,
@@ -33,7 +33,7 @@ const galleryItems: GalleryItem[] = [
     title: "Master Bedroom Wardrobe",
     location: "Nashik",
     owner: "Vishal Kadam",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=80",
+    image: "/images/portfolio/craftfolio/master-wardrobe.png",
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ const galleryItems: GalleryItem[] = [
     title: "Sleek TV Unit",
     location: "Nashik",
     owner: "Sunil Joshi",
-    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+    image: "/images/portfolio/craftfolio/tv-unit.png",
   },
   {
     id: 5,
@@ -49,7 +49,7 @@ const galleryItems: GalleryItem[] = [
     title: "Parallel Kitchen Layout",
     location: "Nashik",
     owner: "Pradip Pawar",
-    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&auto=format&fit=crop&q=80&crop=entropy&w=400",
+    image: "/images/portfolio/craftfolio/l-shaped-kitchen.png",
   },
   {
     id: 6,
@@ -57,7 +57,7 @@ const galleryItems: GalleryItem[] = [
     title: "Sliding Door Wardrobe",
     location: "Nashik",
     owner: "Ganesh Shinde",
-    image: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop&q=80",
+    image: "/images/portfolio/craftfolio/sliding-wardrobe.png",
   },
 ];
 

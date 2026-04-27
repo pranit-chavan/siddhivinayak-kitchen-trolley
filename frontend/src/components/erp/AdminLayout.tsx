@@ -1,8 +1,9 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Users, Factory, FileText, IndianRupee, Box, Scissors, Settings, LogOut, Menu, X, Rocket, Bell } from "lucide-react";
 import { useState } from "react";
 import NotificationPanel from "./NotificationPanel";
 import { dummyLeads } from "./NotificationPanel";
+import { authService } from "./Auth/ProtectedRoute";
 
 const sidebarLinks = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
@@ -17,9 +18,15 @@ const sidebarLinks = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
 
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   
+  const handleLogout = () => {
+    authService.logout();
+    navigate("/admin/login", { replace: true });
+  };
+
   // Calculate unread leads specifically dynamically if possible, right now hardcoded via dummyLeads static ref.
   const unreadCount = dummyLeads.filter(l => !l.read).length;
 
@@ -79,7 +86,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="pt-6 border-t border-border mt-6">
-           <button className="flex items-center gap-4 px-4 py-3 text-red-500 hover:bg-red-50 w-full rounded-xl transition-all font-bold">
+           <button 
+             onClick={handleLogout}
+             className="flex items-center gap-4 px-4 py-3 text-red-500 hover:bg-red-50 w-full rounded-xl transition-all font-bold"
+           >
               <LogOut size={20} className="min-w-[20px]" />
               <span className="text-sm">Logout</span>
            </button>

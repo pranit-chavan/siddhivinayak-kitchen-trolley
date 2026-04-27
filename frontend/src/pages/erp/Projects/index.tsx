@@ -4,35 +4,7 @@ import { Plus, Search, Filter, MessageCircle, ExternalLink, Settings } from "luc
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const initialProjects = [
-  {
-    id: "SVK-2025-042",
-    customer: "Meera Kulkarni",
-    phone: "+91 98XXX XXX41",
-    location: "Pashan Area",
-    type: "Modular Kitchen",
-    status: "Manufacturing",
-    date: "2025-03-28",
-  },
-  {
-    id: "SVK-2025-043",
-    customer: "Rahul Deshmukh",
-    phone: "+91 97XXX XXX12",
-    location: "Hadapsar Estate",
-    type: "Kitchen Trolleys",
-    status: "Site Visit Done",
-    date: "2025-04-01",
-  },
-  {
-    id: "SVK-2025-044",
-    customer: "Sunita Patil",
-    phone: "+91 88XXX XXX99",
-    location: "Baner Heights",
-    type: "Wardrobes",
-    status: "Completed",
-    date: "2025-03-15",
-  },
-];
+const initialProjects: any[] = [];
 
 const statusStyles: Record<string, string> = {
   "Inquiry": "bg-blue-100 text-blue-700",

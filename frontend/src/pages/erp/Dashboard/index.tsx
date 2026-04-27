@@ -18,68 +18,39 @@ import { FIRM_NAME, OWNER_NAME } from "@/data/constants";
 const quickStats = [
   {
     label: "Active Projects",
-    value: "18",
-    change: "+3 this week",
+    value: "0",
+    change: "No new activity",
     icon: FolderKanban,
     color: "text-blue-700 bg-blue-100",
     link: "/admin/projects",
   },
   {
     label: "In Production",
-    value: "8",
-    change: "4 on schedule",
+    value: "0",
+    change: "Workshop idle",
     icon: Factory,
     color: "text-indigo-700 bg-indigo-100",
     link: "/admin/production",
   },
   {
     label: "Pending Quotes",
-    value: "5",
-    change: "2 awaiting approval",
+    value: "0",
+    change: "None pending",
     icon: FileText,
     color: "text-orange-700 bg-orange-100",
     link: "/admin/quotation",
   },
   {
     label: "Monthly Revenue",
-    value: "₹8.45L",
-    change: "+12.5% vs last month",
+    value: "₹0.00",
+    change: "Month starting",
     icon: IndianRupee,
     color: "text-green-700 bg-green-100",
     link: "/admin/finance",
   },
 ];
 
-const recentActivity = [
-  {
-    id: "SVK-2025-042",
-    customer: "Meera Kulkarni",
-    action: "Moved to Lamination stage",
-    time: "2 hours ago",
-    type: "production",
-  },
-  {
-    id: "SVK-2025-045",
-    customer: "Amit Wagh",
-    action: "Advance payment ₹15,000 received",
-    time: "5 hours ago",
-    type: "finance",
-  },
-  {
-    id: "SVK-2025-048",
-    customer: "Priya Sharma",
-    action: "New inquiry — Modular Kitchen",
-    time: "1 day ago",
-    type: "inquiry",
-  },
-  {
-    id: "SVK-2025-043",
-    customer: "Rahul Deshmukh",
-    action: "3D Design approved by customer",
-    time: "1 day ago",
-    type: "design",
-  },
-];
+const recentActivity: any[] = [];
 
 const activityIcons: Record<string, typeof CheckCircle2> = {
   production: Factory,
@@ -155,39 +126,48 @@ export default function Dashboard() {
               View All
             </Link>
           </div>
-          <div className="divide-y divide-border/50">
-            {recentActivity.map((activity) => {
-              const Icon = activityIcons[activity.type] || CheckCircle2;
-              const colorClass =
-                activityColors[activity.type] || "text-gray-600 bg-gray-50";
-              return (
-                <div
-                  key={activity.id + activity.action}
-                  className="px-6 py-5 flex items-center gap-4 hover:bg-muted/5 transition-colors"
-                >
+          <div className="divide-y divide-border/50 min-h-[200px] flex flex-col items-center justify-center">
+            {recentActivity.length > 0 ? (
+              recentActivity.map((activity) => {
+                const Icon = activityIcons[activity.type] || CheckCircle2;
+                const colorClass =
+                  activityColors[activity.type] || "text-gray-600 bg-gray-50";
+                return (
                   <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${colorClass}`}
+                    key={activity.id + activity.action}
+                    className="px-6 py-5 flex items-center gap-4 hover:bg-muted/5 transition-colors w-full"
                   >
-                    <Icon size={20} />
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${colorClass}`}
+                    >
+                      <Icon size={20} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm truncate">
+                        {activity.customer}{" "}
+                        <span className="text-muted-foreground font-normal">
+                          — {activity.id}
+                        </span>
+                      </p>
+                      <p className="text-sm text-muted-foreground truncate">
+                        {activity.action}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground flex-shrink-0">
+                      <Clock size={12} />
+                      {activity.time}
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm truncate">
-                      {activity.customer}{" "}
-                      <span className="text-muted-foreground font-normal">
-                        — {activity.id}
-                      </span>
-                    </p>
-                    <p className="text-sm text-muted-foreground truncate">
-                      {activity.action}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground flex-shrink-0">
-                    <Clock size={12} />
-                    {activity.time}
-                  </div>
+                );
+              })
+            ) : (
+              <div className="flex flex-col items-center justify-center p-8 text-center">
+                <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center text-muted-foreground mb-4">
+                  <Clock size={24} />
                 </div>
-              );
-            })}
+                <p className="text-sm font-medium text-muted-foreground">No recent activity to show.</p>
+              </div>
+            )}
           </div>
         </div>
 

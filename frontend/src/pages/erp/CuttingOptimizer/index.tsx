@@ -27,12 +27,7 @@ const DEFAULT_SHEET = { w: 2440, h: 1220, cost: 2500 }; // 8x4 ft in mm, assumed
 
 export default function CuttingOptimizer() {
   const [sheet, setSheet] = useState(DEFAULT_SHEET);
-  const [parts, setParts] = useState<Part[]>([
-    { id: "1", label: "Side Panel A", width: 720, height: 560, qty: 2 },
-    { id: "2", label: "Bottom Panel", width: 600, height: 560, qty: 1 },
-    { id: "3", label: "Top Support", width: 600, height: 100, qty: 2 },
-    { id: "4", label: "Back Panel", width: 720, height: 600, qty: 1 },
-  ]);
+  const [parts, setParts] = useState<Part[]>([]);
 
   const [optimizedSheets, setOptimizedSheets] = useState<SheetOutput[]>([]);
   const [isOptimized, setIsOptimized] = useState(false);
