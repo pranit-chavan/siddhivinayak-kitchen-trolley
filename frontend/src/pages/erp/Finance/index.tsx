@@ -1,7 +1,7 @@
 import AdminLayout from "@/components/erp/AdminLayout";
 import PaymentSlideOver from "@/components/erp/Finance/PaymentSlideOver";
 import { ArrowUpRight, ArrowDownRight, IndianRupee, FileText, Download, MoreVertical, CreditCard, Wallet, TrendingUp, TrendingDown, Plus, BarChart3, PieChart } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 const dummyPayments: any[] = [];
@@ -13,8 +13,15 @@ const chartData = [
 ];
 
 export default function Finance() {
-  const [payments, setPayments] = useState(dummyPayments);
+  const [payments, setPayments] = useState<any[]>(() => {
+    const saved = localStorage.getItem("svk_payments");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [isSlideOverOpen, setIsSlideOverOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("svk_payments", JSON.stringify(payments));
+  }, [payments]);
 
   const totalCollected = payments.reduce((acc, p) => acc + p.amount, 0);
 

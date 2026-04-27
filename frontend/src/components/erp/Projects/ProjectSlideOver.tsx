@@ -62,20 +62,76 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
     }
   }, [isOpen, initialData]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const year = new Date().getFullYear();
-    const randomNum = Math.floor(100 + Math.random() * 900);
-    const generatedId = `SVK-${year}-${randomNum}`;
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
+      
+      // 1. Create Customer
+      const customerRes = await fetch(`${API_BASE}/customers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.customer,
+          phone: formData.phone,
+          addressLine1: formData.address,
+          city: formData.city,
+          notes: formData.notes,
+        })
+      });
+      if (!customerRes.ok) throw new Error("Failed to create customer");
+      const customerData = await customerRes.json();
 
-    onSave({
-      ...formData,
-      id: generatedId,
-      location: formData.city || formData.address.substring(0, 15) || "N/A"
-    });
-    
-    onClose();
+      // Status mapping to Prisma Enum
+      const statusMap: Record<string, string> = {
+        "Inquiry": "INQUIRY",
+        "Site Visit Done": "SITE_VISIT",
+        "Design Ready": "DESIGN",
+        "Order Confirmed": "ORDER_CONFIRMED",
+        "Manufacturing": "PRODUCTION",
+        "Installation Scheduled": "INSTALLATION",
+        "Completed": "COMPLETED"
+      };
+      
+      const backendStatus = statusMap[formData.status] || "INQUIRY";
+
+      // 2. Create Project
+      const projectRes = await fetch(`${API_BASE}/projects`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `${formData.customer} - ${formData.type}`,
+          scope: formData.notes || "New project created from ERP",
+          furnitureType: formData.type,
+          location: formData.city || formData.address.substring(0, 15) || "N/A",
+          addressLine1: formData.address,
+          city: formData.city,
+          status: backendStatus,
+          customerId: customerData.id,
+          notes: formData.notes,
+          startDate: formData.date ? new Date(formData.date).toISOString() : undefined,
+        })
+      });
+      if (!projectRes.ok) throw new Error("Failed to create project");
+      const projectData = await projectRes.json();
+      
+      // Re-map it slightly for the frontend table
+      onSave({
+        ...formData,
+        id: projectData.code,
+        location: projectData.location,
+        type: projectData.furnitureType,
+        status: formData.status, // keep frontend label for now
+        date: formData.date,
+        customer: formData.customer
+      });
+      
+      onClose();
+    } catch (error) {
+      console.error("Failed to create project:", error);
+      alert("Failed to create project. Ensure backend is running.");
+    }
   };
 
   return (

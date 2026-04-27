@@ -20,10 +20,40 @@ export default function Projects() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const [projectList, setProjectList] = useState(initialProjects);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSlideOverOpen, setIsSlideOverOpen] = useState(false);
-  const [leadData, setLeadData] = useState<any>(null);
+  const [projectList, setProjectList] = useState<any[]>([]);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
+
+  useEffect(() => {
+    fetch(`${API_BASE}/projects`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const mapped = data.map((p: any) => ({
+            id: p.code,
+            customer: p.customer?.name || "Unknown Customer",
+            location: p.location || "N/A",
+            type: p.furnitureType || "Custom",
+            status: mapBackendStatusToFrontend(p.status),
+            date: new Date(p.createdAt).toISOString().split('T')[0]
+          }));
+          setProjectList(mapped);
+        }
+      })
+      .catch(err => console.error("Failed to fetch projects", err));
+  }, []);
+
+  const mapBackendStatusToFrontend = (backendStatus: string) => {
+    const map: Record<string, string> = {
+      "INQUIRY": "Inquiry",
+      "SITE_VISIT": "Site Visit Done",
+      "DESIGN": "Design Ready",
+      "ORDER_CONFIRMED": "Order Confirmed",
+      "PRODUCTION": "Manufacturing",
+      "INSTALLATION": "Installation Scheduled",
+      "COMPLETED": "Completed"
+    };
+    return map[backendStatus] || "Inquiry";
+  };
 
   useEffect(() => {
     // If we navigated here from the Notification Lead Converter, auto-open the form
@@ -35,6 +65,10 @@ export default function Projects() {
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state, navigate, location.pathname]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isSlideOverOpen, setIsSlideOverOpen] = useState(false);
+  const [leadData, setLeadData] = useState<any>(null);
 
   const filteredProjects = projectList.filter(p => 
     p.customer.toLowerCase().includes(searchTerm.toLowerCase()) || 

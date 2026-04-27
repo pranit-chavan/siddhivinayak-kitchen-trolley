@@ -1,6 +1,6 @@
 import AdminLayout from "@/components/erp/AdminLayout";
 import { CheckCircle2, Factory, Package, Scissors, Droplet, Settings, ShieldCheck, Truck, MoreHorizontal, Clock, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Layers(props: any) {
   return (
@@ -37,7 +37,14 @@ const PRODUCTION_STAGES = [
 const initialProduction: any[] = [];
 
 export default function Production() {
-  const [projects, setProjects] = useState(initialProduction);
+  const [projects, setProjects] = useState<any[]>(() => {
+    const saved = localStorage.getItem("svk_projects");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("svk_projects", JSON.stringify(projects));
+  }, [projects]);
 
   const toggleStage = (projectId: string, stageId: string) => {
     setProjects(prev => prev.map(p => {
@@ -52,7 +59,7 @@ export default function Production() {
           p.completedStages.includes(s.id)
         );
         if (stageIndex !== lastCompletedIndex) return p; // can't remove a middle stage
-        return { ...p, completedStages: p.completedStages.filter(s => s !== stageId) };
+        return { ...p, completedStages: p.completedStages.filter((s: string) => s !== stageId) };
       }
 
       // Mark done: only allow the NEXT stage in sequence
@@ -66,6 +73,7 @@ export default function Production() {
   };
 
   const calculatePercent = (completed: string[]) => {
+    if (!completed) return 0;
     return Math.round((completed.length / PRODUCTION_STAGES.length) * 100);
   };
 

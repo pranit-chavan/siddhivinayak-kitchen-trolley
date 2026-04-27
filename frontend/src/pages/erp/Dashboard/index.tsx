@@ -1,4 +1,5 @@
 import AdminLayout from "@/components/erp/AdminLayout";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   FolderKanban,
@@ -76,6 +77,24 @@ const shortcuts = [
 ];
 
 export default function Dashboard() {
+  const [projectCount, setProjectCount] = useState(0);
+  const [productionCount, setProductionCount] = useState(0);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("svk_projects");
+    if (saved) {
+      const projects = JSON.parse(saved);
+      setProjectCount(projects.length);
+      setProductionCount(projects.filter((p: any) => p.status === "Manufacturing").length);
+    }
+  }, []);
+
+  const dynamicStats = quickStats.map(stat => {
+    if (stat.label === "Active Projects") return { ...stat, value: projectCount.toString() };
+    if (stat.label === "In Production") return { ...stat, value: productionCount.toString() };
+    return stat;
+  });
+
   return (
     <AdminLayout>
       {/* Header */}
@@ -87,7 +106,7 @@ export default function Dashboard() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-        {quickStats.map((stat) => (
+        {dynamicStats.map((stat) => (
           <Link
             key={stat.label}
             to={stat.link}

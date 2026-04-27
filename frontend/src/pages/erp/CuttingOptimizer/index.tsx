@@ -1,6 +1,6 @@
 import AdminLayout from "@/components/erp/AdminLayout";
 import { Scissors, Download, Play, Trash2, Printer, Plus, Grid3X3, Calculator, Box, Layout, Import } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Part {
@@ -27,7 +27,14 @@ const DEFAULT_SHEET = { w: 2440, h: 1220, cost: 2500 }; // 8x4 ft in mm, assumed
 
 export default function CuttingOptimizer() {
   const [sheet, setSheet] = useState(DEFAULT_SHEET);
-  const [parts, setParts] = useState<Part[]>([]);
+  const [parts, setParts] = useState<Part[]>(() => {
+    const saved = localStorage.getItem("svk_cutting_parts");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("svk_cutting_parts", JSON.stringify(parts));
+  }, [parts]);
 
   const [optimizedSheets, setOptimizedSheets] = useState<SheetOutput[]>([]);
   const [isOptimized, setIsOptimized] = useState(false);

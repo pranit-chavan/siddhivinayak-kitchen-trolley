@@ -254,7 +254,7 @@ export class ProjectsService {
     };
   }
 
-  async create(dto: CreateProjectDto, user: AuthenticatedUser) {
+  async create(dto: CreateProjectDto, user?: AuthenticatedUser) {
     await this.prisma.customer.findUniqueOrThrow({
       where: { id: dto.customerId },
       select: { id: true },
@@ -293,7 +293,7 @@ export class ProjectsService {
               customerId: dto.customerId,
               leadId: dto.leadId,
               assignedToId: dto.assignedToId,
-              createdById: user.sub,
+              createdById: user?.sub,
               estimatedValue: dto.estimatedValue,
               startDate: dto.startDate ? new Date(dto.startDate) : undefined,
               expectedCompletionDate: dto.expectedCompletionDate
@@ -308,7 +308,7 @@ export class ProjectsService {
               projectId: project.id,
               status: project.status,
               note: 'Project created',
-              changedById: user.sub,
+              changedById: user?.sub,
             },
           });
 

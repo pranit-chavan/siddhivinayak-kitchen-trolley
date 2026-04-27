@@ -20,6 +20,7 @@ export class ProjectsController {
     private readonly measurementsService: MeasurementsService,
   ) {}
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'List projects' })
   list(
@@ -42,12 +43,12 @@ export class ProjectsController {
     return this.projectsService.getById(id);
   }
 
+  @Public()
   @Post()
-  @Roles(UserRole.OWNER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Create a project' })
   create(
     @Body() dto: CreateProjectDto,
-    @CurrentUser() user: AuthenticatedUser,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
     return this.projectsService.create(dto, user);
   }
