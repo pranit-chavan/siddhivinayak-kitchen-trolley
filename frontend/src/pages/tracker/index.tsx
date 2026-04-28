@@ -1,9 +1,9 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "@/components/portfolio/Navbar";
 import Footer from "@/components/portfolio/Footer";
 import WhatsAppButton from "@/components/shared/WhatsAppButton";
-import { CheckCircle2, Box, Clock, MapPin, Layout, Loader2, AlertCircle } from "lucide-react";
+import { CheckCircle2, Box, Clock, MapPin, Layout, Loader2, AlertCircle, Search } from "lucide-react";
 import { WHATSAPP_URL } from "@/data/constants";
 import Customer3DViewer from "@/components/shared/Customer3DViewer";
 
@@ -11,21 +11,25 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api
 
 export default function Tracker() {
   const { projectId } = useParams();
+  const navigate = useNavigate();
   const [show3D, setShow3D] = useState(false);
   const [project, setProject] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [designItems, setDesignItems] = useState<any[]>([]);
   const [designRoom, setDesignRoom] = useState({ roomWidth: 3.0, roomDepth: 2.4, roomHeight: 2.7, counterColor: "#1e1e1e" });
+  const [searchInput, setSearchInput] = useState("");
+  const [searching, setSearching] = useState(false);
 
   // Fetch live project data from the backend using the project code from URL
   useEffect(() => {
     if (!projectId) return;
-
     setLoading(true);
+    setError(null);
+    setProject(null);
     fetch(`${API_BASE}/projects/track/${projectId}`)
       .then(async (res) => {
-        if (!res.ok) throw new Error(`Project not found (${res.status})`);
+        if (!res.ok) throw new Error(`Project not found. Please check your SVK ID.`);
         return res.json();
       })
       .then((data) => {
@@ -37,6 +41,13 @@ export default function Tracker() {
         setLoading(false);
       });
   }, [projectId]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const id = searchInput.trim().toUpperCase();
+    if (!id) return;
+    navigate(`/tracker/${id}`);
+  };
 
   // Fetch the published 3D design when available
   useEffect(() => {
@@ -55,6 +66,55 @@ export default function Tracker() {
       .catch(() => {/* design load failure is non-fatal */});
   }, [project?.has3DDesign, projectId]);
 
+  // ── No projectId: show the Search Landing UI ──────────────────────────────
+  if (!projectId) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-40 pb-24 px-4">
+          <div className="container mx-auto max-w-2xl text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded-full mb-6">
+              <Clock size={14} /> Live Project Tracking
+            </div>
+            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
+              Track Your Kitchen Project
+            </h1>
+            <p className="text-muted-foreground text-lg mb-12">
+              Enter the <span className="text-primary font-bold">SVK ID</span> shared with you via WhatsApp to see your project's live status.
+            </p>
+
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+              <div className="relative flex-1">
+                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  id="svk-search-input"
+                  type="text"
+                  value={searchInput}
+                  onChange={e => setSearchInput(e.target.value)}
+                  placeholder="e.g. SVK-2026-001"
+                  className="w-full pl-12 pr-4 py-4 rounded-2xl border border-border bg-background text-foreground font-bold text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                />
+              </div>
+              <button
+                id="svk-search-btn"
+                type="submit"
+                className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold text-sm hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/25"
+              >
+                Track Now
+              </button>
+            </form>
+
+            <p className="mt-8 text-xs text-muted-foreground">
+              Don't have your SVK ID? <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-primary font-bold hover:underline">Contact us on WhatsApp</a>
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // ── Has projectId: show loading / error / project ──────────────────────────
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -77,14 +137,16 @@ export default function Tracker() {
           <AlertCircle size={48} className="mx-auto text-destructive mb-4" />
           <h1 className="text-3xl font-display mb-4">Project Not Found</h1>
           <p className="text-muted-foreground mb-8">
-            {error ?? "Please check the link sent to you via WhatsApp."}
+            {error ?? "Please check your SVK ID or contact us via WhatsApp."}
           </p>
-          <Link
-            to="/"
-            className="px-6 py-3 bg-primary text-primary-foreground rounded-full"
-          >
-            Return Home
-          </Link>
+          <div className="flex gap-4 justify-center">
+            <Link to="/tracker" className="px-6 py-3 bg-muted text-foreground rounded-full font-bold border border-border hover:bg-muted/80 transition-all">
+              Try Again
+            </Link>
+            <Link to="/" className="px-6 py-3 bg-primary text-primary-foreground rounded-full font-bold">
+              Return Home
+            </Link>
+          </div>
         </main>
       </div>
     );

@@ -34,17 +34,44 @@ const PRODUCTION_STAGES = [
   { id: "ready", label: "Ready for Delivery", icon: Truck },
 ];
 
-const initialProduction: any[] = [];
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
+
+// Map backend project status → completed production stages
+const statusToStages: Record<string, string[]> = {
+  INQUIRY: [],
+  SITE_VISIT: ["material_ordered"],
+  DESIGN: ["material_ordered", "material_received"],
+  ORDER_CONFIRMED: ["material_ordered", "material_received", "cutting"],
+  PRODUCTION: ["material_ordered", "material_received", "cutting", "lamination", "polishing"],
+  INSTALLATION: ["material_ordered", "material_received", "cutting", "lamination", "polishing", "hardware", "qc"],
+  COMPLETED: ["material_ordered", "material_received", "cutting", "lamination", "polishing", "hardware", "qc", "ready"],
+};
 
 export default function Production() {
-  const [projects, setProjects] = useState<any[]>(() => {
-    const saved = localStorage.getItem("svk_projects");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [projects, setProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem("svk_projects", JSON.stringify(projects));
-  }, [projects]);
+    fetch(`${API_BASE}/projects`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const mapped = data.map((p: any) => ({
+            id: p.code,
+            customer: p.customer?.name || "Unknown",
+            type: p.furnitureType || "Custom",
+            status: p.status,
+            completedStages: statusToStages[p.status] ?? [],
+          }));
+          setProjects(mapped);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch projects:", err);
+        setLoading(false);
+      });
+  }, []);
 
   const toggleStage = (projectId: string, stageId: string) => {
     setProjects(prev => prev.map(p => {
@@ -76,6 +103,19 @@ export default function Production() {
     if (!completed) return 0;
     return Math.round((completed.length / PRODUCTION_STAGES.length) * 100);
   };
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64 text-muted-foreground">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="font-bold">Loading production data...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -109,6 +149,13 @@ export default function Production() {
       </div>
 
       <div className="grid grid-cols-1 gap-12">
+        {projects.length === 0 ? (
+          <div className="text-center py-24 text-muted-foreground border border-dashed border-border rounded-3xl">
+            <Factory size={48} className="mx-auto mb-4 opacity-20" />
+            <p className="font-bold text-lg">No projects in production yet.</p>
+            <p className="text-sm mt-1">Register a project from the Projects tab to see it here.</p>
+          </div>
+        ) : null}
         {projects.map((project) => {
           const percent = calculatePercent(project.completedStages);
           return (
