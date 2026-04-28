@@ -28,6 +28,8 @@ function App() {
 
         {/* PUBLIC — Standalone Project Tracker */}
         <Route path="/track/:projectId" element={<Tracker />} />
+        <Route path="/tracker" element={<Tracker />} />
+        <Route path="/tracker/:projectId" element={<Tracker />} />
 
         {/* PUBLIC — Login Page */}
         <Route path="/admin/login" element={<Login />} />
