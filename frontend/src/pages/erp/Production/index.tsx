@@ -61,7 +61,10 @@ export default function Production() {
             customer: p.customer?.name || "Unknown",
             type: p.furnitureType || "Custom",
             status: p.status,
-            completedStages: statusToStages[p.status] ?? [],
+            // Use real productionJob stages if available, else derive from status
+            completedStages: Array.isArray(p.productionJob?.completedStages) && p.productionJob.completedStages.length > 0
+              ? p.productionJob.completedStages
+              : statusToStages[p.status] ?? [],
           }));
           setProjects(mapped);
         }

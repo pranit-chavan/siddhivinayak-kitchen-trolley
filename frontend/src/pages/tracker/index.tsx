@@ -27,7 +27,7 @@ export default function Tracker() {
     setLoading(true);
     setError(null);
     setProject(null);
-    fetch(`${API_BASE}/projects/track/${projectId}`)
+    fetch(`${API_BASE}/projects/tracker/${projectId}`)
       .then(async (res) => {
         if (!res.ok) throw new Error(`Project not found. Please check your SVK ID.`);
         return res.json();

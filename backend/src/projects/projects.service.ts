@@ -35,6 +35,12 @@ export class ProjectsService {
       },
       include: {
         customer: true,
+        productionJob: {
+          select: {
+            currentStage: true,
+            completedStages: true,
+          },
+        },
         assignedTo: {
           select: {
             id: true,
@@ -309,6 +315,14 @@ export class ProjectsService {
               status: project.status,
               note: 'Project created',
               changedById: user?.sub,
+            },
+          });
+
+          // Auto-create a ProductionJob so it appears in Production dashboard immediately
+          await tx.productionJob.create({
+            data: {
+              projectId: project.id,
+              completedStages: [],
             },
           });
 
