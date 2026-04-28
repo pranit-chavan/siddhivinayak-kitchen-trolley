@@ -76,24 +76,100 @@ const shortcuts = [
   { label: "Cutting", icon: Scissors, href: "/admin/cutting" },
 ];
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
+
 export default function Dashboard() {
-  const [projectCount, setProjectCount] = useState(0);
-  const [productionCount, setProductionCount] = useState(0);
+  const [stats, setStats] = useState({
+    active: 0,
+    production: 0,
+    inquiry: 0,
+    completed: 0,
+  });
+  const [recentProjects, setRecentProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem("svk_projects");
-    if (saved) {
-      const projects = JSON.parse(saved);
-      setProjectCount(projects.length);
-      setProductionCount(projects.filter((p: any) => p.status === "Manufacturing").length);
-    }
+    fetch(`${API_BASE}/projects`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const active = data.filter((p: any) => p.status !== "COMPLETED").length;
+          const production = data.filter((p: any) => p.status === "PRODUCTION").length;
+          const inquiry = data.filter((p: any) => p.status === "INQUIRY").length;
+          const completed = data.filter((p: any) => p.status === "COMPLETED").length;
+          setStats({ active, production, inquiry, completed });
+          // Take last 5 for recent activity
+          setRecentProjects(data.slice(0, 5));
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
-  const dynamicStats = quickStats.map(stat => {
-    if (stat.label === "Active Projects") return { ...stat, value: projectCount.toString() };
-    if (stat.label === "In Production") return { ...stat, value: productionCount.toString() };
-    return stat;
-  });
+  const statusLabel: Record<string, string> = {
+    INQUIRY: "New Inquiry",
+    SITE_VISIT: "Site Visit Scheduled",
+    DESIGN: "Design in Progress",
+    ORDER_CONFIRMED: "Order Confirmed",
+    PRODUCTION: "In Production",
+    INSTALLATION: "Installation Scheduled",
+    COMPLETED: "Project Completed",
+  };
+
+  const statusColor: Record<string, string> = {
+    INQUIRY: "text-blue-600 bg-blue-50",
+    SITE_VISIT: "text-yellow-600 bg-yellow-50",
+    DESIGN: "text-purple-600 bg-purple-50",
+    ORDER_CONFIRMED: "text-orange-600 bg-orange-50",
+    PRODUCTION: "text-indigo-600 bg-indigo-50",
+    INSTALLATION: "text-cyan-600 bg-cyan-50",
+    COMPLETED: "text-green-600 bg-green-50",
+  };
+
+  const statusIcon: Record<string, typeof CheckCircle2> = {
+    INQUIRY: AlertCircle,
+    SITE_VISIT: Clock,
+    DESIGN: Layout,
+    ORDER_CONFIRMED: FileText,
+    PRODUCTION: Factory,
+    INSTALLATION: TrendingUp,
+    COMPLETED: CheckCircle2,
+  };
+
+  const dynamicStats = [
+    {
+      label: "Active Projects",
+      value: loading ? "…" : stats.active.toString(),
+      change: stats.active > 0 ? `${stats.active} ongoing` : "No active projects",
+      icon: FolderKanban,
+      color: "text-blue-700 bg-blue-100",
+      link: "/admin/projects",
+    },
+    {
+      label: "In Production",
+      value: loading ? "…" : stats.production.toString(),
+      change: stats.production > 0 ? `${stats.production} in workshop` : "Workshop idle",
+      icon: Factory,
+      color: "text-indigo-700 bg-indigo-100",
+      link: "/admin/production",
+    },
+    {
+      label: "New Inquiries",
+      value: loading ? "…" : stats.inquiry.toString(),
+      change: stats.inquiry > 0 ? `${stats.inquiry} awaiting follow-up` : "None pending",
+      icon: AlertCircle,
+      color: "text-orange-700 bg-orange-100",
+      link: "/admin/projects",
+    },
+    {
+      label: "Completed",
+      value: loading ? "…" : stats.completed.toString(),
+      change: stats.completed > 0 ? `${stats.completed} delivered` : "None yet",
+      icon: CheckCircle2,
+      color: "text-green-700 bg-green-100",
+      link: "/admin/projects",
+    },
+  ];
 
   return (
     <AdminLayout>
@@ -145,36 +221,35 @@ export default function Dashboard() {
               View All
             </Link>
           </div>
-          <div className="divide-y divide-border/50 min-h-[200px] flex flex-col items-center justify-center">
-            {recentActivity.length > 0 ? (
-              recentActivity.map((activity) => {
-                const Icon = activityIcons[activity.type] || CheckCircle2;
-                const colorClass =
-                  activityColors[activity.type] || "text-gray-600 bg-gray-50";
+          <div className="divide-y divide-border/50 min-h-[200px] flex flex-col">
+            {loading ? (
+              <div className="flex items-center justify-center p-8">
+                <div className="w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : recentProjects.length > 0 ? (
+              recentProjects.map((project: any) => {
+                const Icon = statusIcon[project.status] || CheckCircle2;
+                const colorClass = statusColor[project.status] || "text-gray-600 bg-gray-50";
                 return (
                   <div
-                    key={activity.id + activity.action}
+                    key={project.id}
                     className="px-6 py-5 flex items-center gap-4 hover:bg-muted/5 transition-colors w-full"
                   >
-                    <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${colorClass}`}
-                    >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${colorClass}`}>
                       <Icon size={20} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm truncate">
-                        {activity.customer}{" "}
-                        <span className="text-muted-foreground font-normal">
-                          — {activity.id}
-                        </span>
+                        {project.customer?.name ?? "Unknown"}{" "}
+                        <span className="text-muted-foreground font-normal">— {project.code}</span>
                       </p>
                       <p className="text-sm text-muted-foreground truncate">
-                        {activity.action}
+                        {statusLabel[project.status] ?? project.status}
                       </p>
                     </div>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground flex-shrink-0">
                       <Clock size={12} />
-                      {activity.time}
+                      {new Date(project.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}
                     </div>
                   </div>
                 );
@@ -184,7 +259,7 @@ export default function Dashboard() {
                 <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center text-muted-foreground mb-4">
                   <Clock size={24} />
                 </div>
-                <p className="text-sm font-medium text-muted-foreground">No recent activity to show.</p>
+                <p className="text-sm font-medium text-muted-foreground">No projects yet. Register your first project!</p>
               </div>
             )}
           </div>
