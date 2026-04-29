@@ -54,9 +54,7 @@ export class CustomersService {
     });
 
     if (existingCustomer) {
-      throw new ConflictException(
-        'A customer with this phone number or email already exists',
-      );
+      return existingCustomer;
     }
 
     return this.prisma.customer.create({
