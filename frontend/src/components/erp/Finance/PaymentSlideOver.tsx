@@ -11,7 +11,10 @@ interface PaymentSlideOverProps {
 const paymentModes = ["UPI", "CASH", "BANK TRANSFER", "CHEQUE"];
 const paymentTypes = ["Advance", "Partial", "Final Balance", "Other"];
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
+
 export default function PaymentSlideOver({ isOpen, onClose, onSave }: PaymentSlideOverProps) {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     customer: "",
     projectId: "",
@@ -22,14 +25,37 @@ export default function PaymentSlideOver({ isOpen, onClose, onSave }: PaymentSli
     reference: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
-      ...formData,
-      id: Math.random().toString(36).substr(2, 9),
-      amount: parseFloat(formData.amount as string) || 0
-    });
-    onClose();
+    setLoading(true);
+    
+    try {
+      const res = await fetch(`${API_BASE}/finance/payments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectCode: formData.projectId, // Backend uses projectCode to link
+          amount: parseFloat(formData.amount),
+          paymentDate: new Date(formData.date).toISOString(),
+          mode: formData.mode,
+          type: formData.type.toUpperCase().replace(" ", "_"), // Match Prisma Enum (ADVANCE, PARTIAL, etc)
+          reference: formData.reference,
+          notes: `Recorded for ${formData.customer}`
+        })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Failed to record payment");
+      }
+
+      onSave(await res.json());
+      onClose();
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -163,10 +189,17 @@ export default function PaymentSlideOver({ isOpen, onClose, onSave }: PaymentSli
               </button>
               <button 
                 onClick={handleSubmit}
-                className="flex-[2] h-12 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-lg shadow-primary/20 text-xs uppercase tracking-widest"
+                disabled={loading}
+                className="flex-[2] h-12 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-lg shadow-primary/20 text-xs uppercase tracking-widest disabled:opacity-50"
               >
-                <Save size={18} />
-                Save Transaction
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Save size={18} />
+                    Save Transaction
+                  </>
+                )}
               </button>
             </div>
           </motion.div>
