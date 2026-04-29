@@ -1,6 +1,6 @@
 import AdminLayout from "@/components/erp/AdminLayout";
 import ProjectSlideOver from "@/components/erp/Projects/ProjectSlideOver";
-import { Plus, Search, Filter, MessageCircle, ExternalLink, Settings } from "lucide-react";
+import { Plus, Search, Filter, MessageCircle, ExternalLink, Settings, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -30,6 +30,7 @@ export default function Projects() {
         if (Array.isArray(data)) {
           const mapped = data.map((p: any) => ({
             id: p.code,
+            realId: p.id,
             customer: p.customer?.name || "Unknown Customer",
             location: p.location || "N/A",
             type: p.furnitureType || "Custom",
@@ -77,6 +78,27 @@ export default function Projects() {
 
   const handleAddProject = (newProject: any) => {
     setProjectList([newProject, ...projectList]);
+  };
+
+  const handleDelete = async (projectId: string, projectCode: string) => {
+    if (!window.confirm(`Are you sure you want to delete project ${projectCode}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/projects/${projectId}`, {
+        method: 'DELETE'
+      });
+
+      if (res.ok) {
+        setProjectList(projectList.filter(p => p.realId !== projectId));
+      } else {
+        alert("Failed to delete project. Please try again.");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Error deleting project. Check connection.");
+    }
   };
 
   return (
@@ -176,6 +198,13 @@ export default function Projects() {
                     <div className="flex items-center justify-end gap-3">
                       <button className="p-2 bg-muted hover:bg-primary/10 hover:text-primary rounded-lg transition-colors border border-border/50" title="Manage Status">
                         <Settings size={16} />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(project.realId, project.id)}
+                        className="p-2 bg-muted hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors border border-border/50" 
+                        title="Delete Project"
+                      >
+                        <Trash2 size={16} />
                       </button>
                       <button 
                         onClick={() => {

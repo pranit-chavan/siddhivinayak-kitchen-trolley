@@ -260,6 +260,26 @@ export class ProjectsService {
     };
   }
 
+  async remove(idOrCode: string) {
+    // Try to find by UUID first, then by code
+    const project = await this.prisma.project.findFirst({
+      where: {
+        OR: [
+          { id: idOrCode.length === 36 ? idOrCode : undefined },
+          { code: idOrCode },
+        ],
+      },
+    });
+
+    if (!project) return { success: false, message: 'Project not found' };
+
+    await this.prisma.project.delete({
+      where: { id: project.id },
+    });
+
+    return { success: true };
+  }
+
   async create(dto: CreateProjectDto, user?: AuthenticatedUser) {
     await this.prisma.customer.findUniqueOrThrow({
       where: { id: dto.customerId },

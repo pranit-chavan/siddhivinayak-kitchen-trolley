@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProjectStatus, UserRole } from '@prisma/client';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -78,5 +78,12 @@ export class ProjectsController {
     @Body() dto: CreateMeasurementSetDto,
   ) {
     return this.measurementsService.create(id, dto);
+  }
+
+  @Public()
+  @Delete(':idOrCode')
+  @ApiOperation({ summary: 'Delete a project' })
+  remove(@Param('idOrCode') idOrCode: string) {
+    return this.projectsService.remove(idOrCode);
   }
 }

@@ -120,6 +120,7 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
       onSave({
         ...formData,
         id: projectData.code,
+        realId: projectData.id,
         location: projectData.location,
         type: projectData.furnitureType,
         status: formData.status, // keep frontend label for now
