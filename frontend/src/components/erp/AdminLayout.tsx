@@ -7,8 +7,6 @@ import { authService } from "./Auth/ProtectedRoute";
 
 const sidebarLinks = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
-  { icon: Image, label: "Manage Products", path: "/admin/cms/products" },
-  { icon: Briefcase, label: "Manage Craftfolio", path: "/admin/cms/portfolio" },
   { icon: Users, label: "Projects", path: "/admin/projects" },
   { icon: Factory, label: "Production Tracking", path: "/admin/production" },
   { icon: FileText, label: "Quotation Builder", path: "/admin/quotation" },
@@ -16,6 +14,8 @@ const sidebarLinks = [
   { icon: Box, label: "3D Design Studio", path: "/admin/design" },
   { icon: Scissors, label: "Cutting Optimizer", path: "/admin/cutting" },
   { icon: MessageSquare, label: "Inquiries", path: "/admin/leads" },
+  { icon: Image, label: "Manage Products", path: "/admin/cms/products" },
+  { icon: Briefcase, label: "Manage Craftfolio", path: "/admin/cms/portfolio" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
