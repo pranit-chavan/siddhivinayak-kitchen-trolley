@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ShieldCheck, Gem, Hammer, MessageCircle } from "lucide-react";
 import { products } from "@/data/products";
