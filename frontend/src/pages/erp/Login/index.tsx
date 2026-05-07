@@ -80,8 +80,9 @@ export default function Login() {
               </button>
            </form>
            
-           <div className="mt-8 pt-6 border-t border-border/50 text-center">
-              <p className="text-xs text-muted-foreground italic">Restricted strictly for internal staff. Hint: `sachin123`.</p>
+           <div className="mt-8 pt-6 border-t border-border/50 text-center flex items-center justify-center gap-2">
+              <ShieldCheck size={16} className="text-muted-foreground" />
+              <p className="text-xs text-muted-foreground italic">Restricted strictly for internal staff.</p>
            </div>
         </div>
       </div>
