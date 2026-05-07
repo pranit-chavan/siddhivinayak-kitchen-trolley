@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Siddhivinayak Kitchen Trolley](frontend/public/favicon.png)
+<img src="frontend/public/favicon.png" alt="Siddhivinayak Kitchen Trolley" width="120">
 
 **A full-stack ERP & customer-facing web platform for a premium modular kitchen and customized furniture business.**
 
