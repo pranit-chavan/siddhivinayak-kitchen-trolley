@@ -32,9 +32,7 @@ const ReviewsSection = () => {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center text-center"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-4">
-            Testimonials
-          </div>
+          
           <h2 className="text-3xl md:text-[2.5rem] font-display text-foreground leading-tight mb-4">
             Hear What Our <span className="text-primary italic">Customers</span> Say.
           </h2>

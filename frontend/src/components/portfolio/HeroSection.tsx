@@ -11,15 +11,7 @@ const HeroSection = () => {
 
       <div className="container mx-auto relative w-full h-full flex flex-col justify-center">
         <div className="max-w-[100%] lg:max-w-[55%] relative z-10 w-full">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-8"
-          >
-            <Sparkles size={14} />
-            Crafting Bespoke Spaces Since 2012
-          </motion.div>
+          
 
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}

@@ -39,9 +39,7 @@ const ContactSection = () => {
             className="flex flex-col"
           >
             <div className="mb-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-6 uppercase tracking-wider">
-                Get in Touch
-              </div>
+              
               <h2 className="text-4xl md:text-[3.5rem] font-display text-foreground leading-[1.1] mb-6">
                 Let's Build<br /><span className="text-primary italic">Something Together</span>.
               </h2>

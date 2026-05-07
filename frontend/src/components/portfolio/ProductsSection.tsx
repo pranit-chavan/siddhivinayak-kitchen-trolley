@@ -28,9 +28,7 @@ const ProductsSection = () => {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-4">
-            What We Build
-          </div>
+          
           <h2 className="text-3xl md:text-[2.5rem] font-display text-foreground leading-tight mb-4">
             Furniture for<br /><span className="text-primary italic">Every Corner of Your Home</span>.
           </h2>

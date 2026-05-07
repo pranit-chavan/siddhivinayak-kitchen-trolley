@@ -59,9 +59,7 @@ const AboutSection = () => {
               transition={{ duration: 0.6 }}
               className="mb-10 pt-10 md:pt-0"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-4">
-                Who We Are
-              </div>
+              
               <h2 className="text-3xl md:text-[2.5rem] font-display mb-6">Where Precision<br /><span className="text-primary italic">Meets Craftsmanship</span>.</h2>
               <p className="text-muted-foreground leading-relaxed mb-6 font-medium">
                 Siddhivinayak Kitchen Trolley System is a bespoke furniture studio rooted in Maharashtra — built on honest craft, clean finishes, and spaces that actually work.
