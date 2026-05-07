@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "npx prisma generate --schema=../database/schema.prisma && npx prisma db push --schema=../database/schema.prisma && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "prisma:generate": "prisma generate --schema=../database/schema.prisma",
     "prisma:migrate:dev": "prisma migrate dev --schema=../database/schema.prisma",
