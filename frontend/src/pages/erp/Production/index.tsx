@@ -58,12 +58,13 @@ export default function Production() {
         if (Array.isArray(data)) {
           const mapped = data.map((p: any) => ({
             id: p.code,
+            realId: p.id,
             customer: p.customer?.name || "Unknown",
             type: p.furnitureType || "Custom",
             status: p.status,
             // Use real productionJob stages if available, else derive from status
             completedStages: Array.isArray(p.productionJob?.completedStages) && p.productionJob.completedStages.length > 0
-              ? p.productionJob.completedStages
+              ? p.productionJob.completedStages.map((s: string) => s.toLowerCase())
               : statusToStages[p.status] ?? [],
           }));
           setProjects(mapped);
@@ -76,30 +77,57 @@ export default function Production() {
       });
   }, []);
 
-  const toggleStage = (projectId: string, stageId: string) => {
-    setProjects(prev => prev.map(p => {
-      if (p.id !== projectId) return p;
+  const toggleStage = async (projectCode: string, stageId: string) => {
+    const project = projects.find(p => p.id === projectCode);
+    if (!project) return;
 
-      const stageIndex = PRODUCTION_STAGES.findIndex(s => s.id === stageId);
-      const isDone = p.completedStages.includes(stageId);
+    const stageIndex = PRODUCTION_STAGES.findIndex(s => s.id === stageId);
+    const isDone = project.completedStages.includes(stageId);
+    let newCompletedStages = [...project.completedStages];
 
-      // Un-mark: only allow removing the LAST completed stage (no skipping back)
-      if (isDone) {
-        const lastCompletedIndex = PRODUCTION_STAGES.findLastIndex(s =>
-          p.completedStages.includes(s.id)
-        );
-        if (stageIndex !== lastCompletedIndex) return p; // can't remove a middle stage
-        return { ...p, completedStages: p.completedStages.filter((s: string) => s !== stageId) };
-      }
-
+    // Un-mark: only allow removing the LAST completed stage
+    if (isDone) {
+      const lastCompletedIndex = PRODUCTION_STAGES.findLastIndex(s =>
+        project.completedStages.includes(s.id)
+      );
+      if (stageIndex !== lastCompletedIndex) return; // can't remove a middle stage
+      newCompletedStages = newCompletedStages.filter((s: string) => s !== stageId);
+    } else {
       // Mark done: only allow the NEXT stage in sequence
       const prevStage = PRODUCTION_STAGES[stageIndex - 1];
-      if (stageIndex > 0 && !p.completedStages.includes(prevStage.id)) {
-        return p; // previous stage not done yet
+      if (stageIndex > 0 && !project.completedStages.includes(prevStage.id)) {
+        return; // previous stage not done yet
       }
+      newCompletedStages.push(stageId);
+    }
 
-      return { ...p, completedStages: [...p.completedStages, stageId] };
-    }));
+    // Optimistic UI update
+    setProjects(prev => prev.map(p => 
+      p.id === projectCode ? { ...p, completedStages: newCompletedStages } : p
+    ));
+
+    // Map stages to uppercase for backend Prisma Enum
+    const backendStages = newCompletedStages.map(s => s.toUpperCase());
+    const currentStage = backendStages.length > 0 ? backendStages[backendStages.length - 1] : "MATERIAL_ORDERED";
+
+    try {
+      const token = localStorage.getItem("auth_token") || "";
+      await fetch(`${API_BASE}/production/jobs/project/${project.realId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          currentStage,
+          completedStages: backendStages,
+          notes: ""
+        })
+      });
+    } catch (e) {
+      console.error("Failed to update production stage:", e);
+      // Revert if needed (omitted for brevity)
+    }
   };
 
   const calculatePercent = (completed: string[]) => {

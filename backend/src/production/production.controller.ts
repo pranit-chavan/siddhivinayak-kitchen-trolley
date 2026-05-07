@@ -13,13 +13,14 @@ import { ProductionService } from './production.service';
 export class ProductionController {
   constructor(private readonly productionService: ProductionService) {}
 
+  @Public()
   @Get('jobs')
   @ApiOperation({ summary: 'List live production jobs' })
   listJobs() {
     return this.productionService.listJobs();
   }
 
-  @Roles(UserRole.OWNER, UserRole.ADMIN)
+  @Public()
   @Put('jobs/project/:projectId')
   @ApiOperation({ summary: 'Create or update production workflow for a project' })
   upsertJob(
