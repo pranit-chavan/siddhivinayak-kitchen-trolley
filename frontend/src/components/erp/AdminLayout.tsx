@@ -7,13 +7,13 @@ import { authService } from "./Auth/ProtectedRoute";
 
 const sidebarLinks = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
-  { icon: MessageSquare, label: "Inquiries", path: "/admin/leads" },
   { icon: Users, label: "Projects", path: "/admin/projects" },
   { icon: Factory, label: "Production Tracking", path: "/admin/production" },
   { icon: FileText, label: "Quotation Builder", path: "/admin/quotation" },
   { icon: IndianRupee, label: "Finance & Billing", path: "/admin/finance" },
   { icon: Box, label: "3D Design Studio", path: "/admin/design" },
   { icon: Scissors, label: "Cutting Optimizer", path: "/admin/cutting" },
+  { icon: MessageSquare, label: "Inquiries", path: "/admin/leads" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -98,7 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-grow p-4 md:p-8 overflow-auto max-h-screen">
+      <main className="flex-1 min-w-0 p-4 md:p-8 overflow-x-hidden overflow-y-auto max-h-screen">
         <div className="container mx-auto">
           {children}
         </div>
