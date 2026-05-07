@@ -22,14 +22,58 @@ const itemVariants = {
 };
 
 const ProductsPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [formData, setFormData] = useState({ name: "", phone: "", location: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
   // Scroll to top on load
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleInquire = (productTitle: string) => {
-    const message = `*Inquiry from Website*%0A%0AHi, I'm interested in the *${productTitle}* I saw on your website. Can you provide more details?`;
-    window.open(`${WHATSAPP_URL}?text=${message}`, "_blank");
+  const handleInquireClick = (productTitle: string) => {
+    setSelectedProduct(productTitle);
+    setFormData({ ...formData, message: `I am interested in the ${productTitle}.` });
+    setIsModalOpen(true);
+  };
+
+  const handleModalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
+      const response = await fetch(`${API_BASE}/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: formData.name,
+          phone: formData.phone,
+          location: formData.location,
+          interest: selectedProduct,
+          notes: formData.message,
+          source: "WEBSITE",
+          status: "NEW",
+        }),
+      });
+
+      if (response.ok) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          setIsModalOpen(false);
+          setIsSuccess(false);
+          setFormData({ name: "", phone: "", location: "", message: "" });
+        }, 3000);
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Network error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -105,11 +149,10 @@ const ProductsPage = () => {
                   </div>
                   
                   <button 
-                    onClick={() => handleInquire(product.title)}
-                    className="w-full py-3 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
+                    onClick={() => handleInquireClick(product.title)}
+                    className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2"
                   >
-                    <MessageCircle size={18} />
-                    Inquire on WhatsApp
+                    Inquire Now →
                   </button>
                 </div>
               </motion.div>
@@ -117,6 +160,45 @@ const ProductsPage = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Inquiry Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-background rounded-3xl p-8 max-w-md w-full shadow-2xl relative border border-border/50">
+            <button 
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+            >
+              ✕
+            </button>
+            <h2 className="text-2xl font-display font-bold mb-2">Request Quote</h2>
+            <p className="text-muted-foreground text-sm mb-6">
+              Inquiring about: <span className="font-semibold text-foreground">{selectedProduct}</span>
+            </p>
+            <form onSubmit={handleModalSubmit} className="space-y-4">
+              <div>
+                <label className="text-xs font-bold uppercase ml-1">Name</label>
+                <input required className="w-full h-12 bg-muted/30 border border-border/50 rounded-xl px-4 mt-1 focus:ring-2 focus:ring-primary/20 focus:outline-none" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Full Name" />
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase ml-1">Phone Number</label>
+                <input required type="tel" className="w-full h-12 bg-muted/30 border border-border/50 rounded-xl px-4 mt-1 focus:ring-2 focus:ring-primary/20 focus:outline-none" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="+91" />
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase ml-1">Location</label>
+                <input required className="w-full h-12 bg-muted/30 border border-border/50 rounded-xl px-4 mt-1 focus:ring-2 focus:ring-primary/20 focus:outline-none" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} placeholder="City / Area" />
+              </div>
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={`w-full h-12 font-bold rounded-xl mt-4 transition-all ${isSuccess ? 'bg-green-600 text-white' : 'bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50'}`}
+              >
+                {isSubmitting ? "Sending..." : isSuccess ? "Sent Successfully! ✓" : "Submit Inquiry"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
       
       <Footer />
     </div>

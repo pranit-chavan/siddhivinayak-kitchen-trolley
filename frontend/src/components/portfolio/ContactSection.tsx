@@ -12,13 +12,42 @@ const ContactSection = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
-    const message = `*Inquiry from Website*%0A%0A*Name:* ${formData.name}%0A*Phone:* ${formData.phone}%0A*Location:* ${formData.location}%0A*Furniture Type:* ${formData.type}%0A*Message:* ${formData.message}`;
-    const whatsappUrl = `${WHATSAPP_URL}?text=${message}`;
-    
-    window.open(whatsappUrl, "_blank");
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
+      const response = await fetch(`${API_BASE}/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: formData.name,
+          phone: formData.phone,
+          location: formData.location,
+          interest: formData.type,
+          notes: formData.message,
+          source: "WEBSITE",
+          status: "NEW",
+        }),
+      });
+
+      if (response.ok) {
+        setIsSuccess(true);
+        setFormData({ name: "", phone: "", location: "", type: FURNITURE_TYPES[0] as string, message: "" });
+        setTimeout(() => setIsSuccess(false), 5000);
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Network error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -162,13 +191,13 @@ const ContactSection = () => {
               </div>
 
               <motion.button
+                disabled={isSubmitting}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="w-full h-14 bg-primary text-primary-foreground font-bold rounded-xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3 relative group overflow-hidden mt-6"
+                className={`w-full h-14 font-bold rounded-xl shadow-xl transition-all flex items-center justify-center gap-3 mt-6 ${isSuccess ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50'}`}
               >
-                <span className="relative z-10">Send on WhatsApp →</span>
-                <div className="absolute inset-0 bg-[#25D366] translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                {isSubmitting ? "Sending..." : isSuccess ? "Inquiry Sent Successfully! ✓" : "Submit Inquiry →"}
               </motion.button>
             </form>
           </motion.div>

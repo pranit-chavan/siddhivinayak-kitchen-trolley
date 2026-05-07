@@ -15,6 +15,7 @@ import Login from "./pages/erp/Login";
 // ERP Modules
 import Dashboard from "./pages/erp/Dashboard";
 import Projects from "./pages/erp/Projects";
+import Leads from "./pages/erp/Leads";
 import Production from "./pages/erp/Production";
 import Quotation from "./pages/erp/Quotation";
 import Finance from "./pages/erp/Finance";
@@ -40,6 +41,7 @@ function App() {
 
         {/* PRIVATE — ERP System Guarded by Auth */}
         <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/admin/leads" element={<ProtectedRoute><Leads /></ProtectedRoute>} />
         <Route path="/admin/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
         <Route path="/admin/production" element={<ProtectedRoute><Production /></ProtectedRoute>} />
         <Route path="/admin/quotation" element={<ProtectedRoute><Quotation /></ProtectedRoute>} />
