@@ -180,7 +180,6 @@ const ContactSection = () => {
                   <label htmlFor="message" className="text-sm font-bold tracking-wide ml-1 uppercase text-foreground">Message</label>
                   <textarea
                     id="message"
-                    required
                     rows={4}
                     className="w-full bg-muted/20 border border-border/50 rounded-xl px-5 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                     placeholder="Describe your requirement, room size, preferred material or finish (optional)"
