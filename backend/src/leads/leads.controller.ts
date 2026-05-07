@@ -16,6 +16,7 @@ import { LeadsService } from './leads.service';
 export class LeadsController {
   constructor(private readonly leadsService: LeadsService) {}
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'List leads' })
   list(@Query('status') status?: LeadStatus, @Query('search') search?: string) {
@@ -29,8 +30,8 @@ export class LeadsController {
     return this.leadsService.create(dto);
   }
 
+  @Public()
   @Patch(':id')
-  @Roles(UserRole.OWNER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Update a lead' })
   update(@Param('id') id: string, @Body() dto: UpdateLeadDto) {
     return this.leadsService.update(id, dto);
