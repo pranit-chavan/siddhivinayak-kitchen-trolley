@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './common/guards/auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { validateEnv } from './config/env';
+import { CmsModule } from './cms/cms.module';
 import { CustomersModule } from './customers/customers.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { DesignsModule } from './designs/designs.module';
@@ -24,6 +25,7 @@ import { QuotationsModule } from './quotations/quotations.module';
     }),
     PrismaModule,
     AuthModule,
+    CmsModule,
     DashboardModule,
     DesignsModule,
     FinanceModule,

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Factory, FileText, IndianRupee, Box, Scissors, Settings, LogOut, Menu, X, Rocket, Bell, MessageSquare } from "lucide-react";
+import { LayoutDashboard, Users, Factory, FileText, IndianRupee, Box, Scissors, Settings, LogOut, Menu, X, Rocket, Bell, MessageSquare, Image, Briefcase } from "lucide-react";
 import { useState } from "react";
 import NotificationPanel from "./NotificationPanel";
 import { dummyLeads } from "./NotificationPanel";
@@ -7,6 +7,8 @@ import { authService } from "./Auth/ProtectedRoute";
 
 const sidebarLinks = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
+  { icon: Image, label: "Manage Products", path: "/admin/cms/products" },
+  { icon: Briefcase, label: "Manage Craftfolio", path: "/admin/cms/portfolio" },
   { icon: Users, label: "Projects", path: "/admin/projects" },
   { icon: Factory, label: "Production Tracking", path: "/admin/production" },
   { icon: FileText, label: "Quotation Builder", path: "/admin/quotation" },

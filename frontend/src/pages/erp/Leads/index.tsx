@@ -17,7 +17,16 @@ export default function Leads() {
       });
       if (res.ok) {
         const data = await res.json();
-        setLeads(data);
+        if (Array.isArray(data)) {
+          setLeads(data);
+        } else if (data && Array.isArray(data.data)) {
+          setLeads(data.data);
+        } else {
+          console.error("Unrecognized leads format", data);
+          setLeads([]);
+        }
+      } else {
+        console.error("Failed to fetch leads. Backend returned:", res.status);
       }
     } catch (error) {
       console.error("Failed to fetch leads", error);

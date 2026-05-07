@@ -21,6 +21,8 @@ import Quotation from "./pages/erp/Quotation";
 import Finance from "./pages/erp/Finance";
 import Design3D from "./pages/erp/Design3D";
 import CuttingOptimizer from "./pages/erp/CuttingOptimizer";
+import CMSProducts from "./pages/erp/CMS/Products";
+import CMSPortfolio from "./pages/erp/CMS/Portfolio";
 
 function App() {
   return (
@@ -41,6 +43,8 @@ function App() {
 
         {/* PRIVATE — ERP System Guarded by Auth */}
         <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/admin/cms/products" element={<ProtectedRoute><CMSProducts /></ProtectedRoute>} />
+        <Route path="/admin/cms/portfolio" element={<ProtectedRoute><CMSPortfolio /></ProtectedRoute>} />
         <Route path="/admin/leads" element={<ProtectedRoute><Leads /></ProtectedRoute>} />
         <Route path="/admin/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
         <Route path="/admin/production" element={<ProtectedRoute><Production /></ProtectedRoute>} />
