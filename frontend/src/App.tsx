@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // Portfolio
 import Home from "./pages/portfolio/Home";
+import ProductsPage from "./pages/portfolio/ProductsPage";
+import CraftfolioPage from "./pages/portfolio/CraftfolioPage";
 
 // Standalone public page
 import Tracker from "./pages/tracker";
@@ -25,6 +27,8 @@ function App() {
       <Routes>
         {/* PUBLIC — Single Page Portfolio */}
         <Route path="/" element={<Home />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/portfolio" element={<CraftfolioPage />} />
 
         {/* PUBLIC — Standalone Project Tracker */}
         <Route path="/track/:projectId" element={<Tracker />} />

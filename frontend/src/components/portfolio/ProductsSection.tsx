@@ -1,6 +1,7 @@
-import { ShoppingBag, ChevronRight } from "lucide-react";
+import { ShoppingBag, ChevronRight, ShieldCheck, Gem, Hammer } from "lucide-react";
 import { products } from "@/data/products";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -44,7 +45,7 @@ const ProductsSection = () => {
           viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {products.map((product) => (
+          {products.slice(0, 6).map((product) => (
             <motion.div 
               key={product.id} 
               variants={itemVariants}
@@ -59,9 +60,26 @@ const ProductsSection = () => {
                 <p className="text-primary text-sm font-semibold mb-4 leading-tight">
                   {product.oneLiner}
                 </p>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-1">
+                <p className="text-muted-foreground text-sm leading-relaxed mb-6 flex-1">
                   {product.description}
                 </p>
+                <div className="space-y-2 mt-auto">
+                  {product.warranty && (
+                    <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
+                      <ShieldCheck size={14} className="text-primary" /> {product.warranty}
+                    </div>
+                  )}
+                  {product.material && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Gem size={14} /> {product.material}
+                    </div>
+                  )}
+                  {product.hardware && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Hammer size={14} /> {product.hardware}
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}

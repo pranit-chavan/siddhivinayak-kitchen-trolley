@@ -1,75 +1,16 @@
 import { useState } from "react";
 import { Maximize2, Tag, MapPin, X } from "lucide-react";
 
-interface GalleryItem {
-  id: number;
-  category: "Kitchen" | "Wardrobe" | "Modular" | "Custom";
-  title: string;
-  location: string;
-  owner: string;
-  image: string;
-}
-
-const galleryItems: GalleryItem[] = [
-  {
-    id: 1,
-    category: "Kitchen",
-    title: "L-Shaped SS Trolley",
-    location: "Nashik",
-    owner: "Ramesh Patil",
-    image: "/images/portfolio/craftfolio/l-shaped-kitchen.png",
-  },
-  {
-    id: 2,
-    category: "Modular",
-    title: "Premium Modular Kitchen",
-    location: "Nashik",
-    owner: "Santosh Deshmukh",
-    image: "/images/portfolio/craftfolio/premium-modular-kitchen.png",
-  },
-  {
-    id: 3,
-    category: "Wardrobe",
-    title: "Master Bedroom Wardrobe",
-    location: "Nashik",
-    owner: "Vishal Kadam",
-    image: "/images/portfolio/craftfolio/master-wardrobe.png",
-  },
-  {
-    id: 4,
-    category: "Custom",
-    title: "Sleek TV Unit",
-    location: "Nashik",
-    owner: "Sunil Joshi",
-    image: "/images/portfolio/craftfolio/tv-unit.png",
-  },
-  {
-    id: 5,
-    category: "Kitchen",
-    title: "Parallel Kitchen Layout",
-    location: "Nashik",
-    owner: "Pradip Pawar",
-    image: "/images/portfolio/craftfolio/l-shaped-kitchen.png",
-  },
-  {
-    id: 6,
-    category: "Wardrobe",
-    title: "Sliding Door Wardrobe",
-    location: "Nashik",
-    owner: "Ganesh Shinde",
-    image: "/images/portfolio/craftfolio/sliding-wardrobe.png",
-  },
-];
-
-const categories = ["All", "Kitchen", "Wardrobe", "Modular", "Custom"];
+import { portfolioItems, portfolioCategories, PortfolioItem } from "@/data/portfolio";
+import { Link } from "react-router-dom";
 
 const CraftfolioSection = () => {
   const [filter, setFilter] = useState("All");
-  const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
+  const [selectedImage, setSelectedImage] = useState<PortfolioItem | null>(null);
 
-  const filteredItems = galleryItems.filter(
+  const filteredItems = portfolioItems.filter(
     (item) => filter === "All" || item.category === filter
-  );
+  ).slice(0, 6);
 
   return (
     <section id="craftfolio" className="py-24 bg-background">
@@ -80,7 +21,7 @@ const CraftfolioSection = () => {
         </div>
 
         <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {categories.map((cat) => (
+          {portfolioCategories.map((cat) => (
             <button
               key={cat}
               onClick={() => setFilter(cat)}
@@ -124,6 +65,15 @@ const CraftfolioSection = () => {
               </div>
             </div>
           ))}
+        </div>
+        
+        <div className="mt-12 text-center">
+          <Link 
+            to="/portfolio"
+            className="inline-block px-8 py-4 bg-primary text-primary-foreground font-bold rounded-full shadow-lg hover:bg-primary/90 transition-all hover:-translate-y-1"
+          >
+            Explore Full Craftfolio →
+          </Link>
         </div>
       </div>
 
