@@ -84,6 +84,15 @@ const ProductsSection = () => {
             </motion.div>
           ))}
         </motion.div>
+
+        <div className="mt-16 text-center">
+          <Link 
+            to="/products"
+            className="inline-block px-8 py-4 bg-primary text-primary-foreground font-bold rounded-full shadow-lg hover:bg-primary/90 transition-all hover:-translate-y-1"
+          >
+            Explore All Products →
+          </Link>
+        </div>
       </div>
     </section>
   );
