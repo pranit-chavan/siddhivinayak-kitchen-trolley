@@ -46,16 +46,41 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
 
   useEffect(() => {
     if (isOpen) {
+      const isEditMode = !!initialData?.id;
+
       setFormData({
-        customer: initialData?.name || "",
+        // Edit mode: initialData.customer is the name string
+        // Lead mode: initialData.name is the name string
+        customer: initialData?.customer || initialData?.name || "",
+
         phone: initialData?.phone || "",
-        address: initialData?.location || "",
-        city: "",
-        type: furnitureTypes.includes(initialData?.interest) ? initialData?.interest : furnitureTypes[0],
-        status: "Inquiry",
-        date: new Date().toISOString().split('T')[0],
+
+        // Edit mode: initialData.address is addressLine1
+        // Lead mode: initialData.location is the address
+        address: initialData?.address || initialData?.location || "",
+
+        // Edit mode: initialData.city; Lead mode: no city field
+        city: initialData?.city || "",
+
+        // Edit mode: initialData.type is the furnitureType string
+        // Lead mode: initialData.interest is the interest string
+        type: initialData?.type
+          || (furnitureTypes.includes(initialData?.interest) ? initialData?.interest : furnitureTypes[0]),
+
+        // Edit mode: preserve real status; Lead mode: always start at Inquiry
+        status: isEditMode ? (initialData?.status || "Inquiry") : "Inquiry",
+
+        // Edit mode: preserve real date; Lead mode: today
+        date: isEditMode
+          ? (initialData?.date || new Date().toISOString().split('T')[0])
+          : new Date().toISOString().split('T')[0],
+
         measurements: initialData?.measurements || [{ name: "Main Kitchen Counter", width: "", height: "", depth: "" }],
-        notes: initialData?.notes || (initialData ? `Source: Web Portfolio Inquiry` : "")
+
+        // Edit mode: show real notes; Lead mode: auto-fill source tag
+        notes: isEditMode
+          ? (initialData?.notes || "")
+          : (initialData ? `Source: Web Portfolio Inquiry` : ""),
       });
     }
   }, [isOpen, initialData]);
