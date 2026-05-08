@@ -1,6 +1,6 @@
-import { X, Save, IndianRupee, CreditCard, User, Hash, Calendar } from "lucide-react";
+import { X, Save, IndianRupee, CreditCard, User, ChevronDown, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface PaymentSlideOverProps {
   isOpen: boolean;
@@ -15,6 +15,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api
 
 export default function PaymentSlideOver({ isOpen, onClose, onSave }: PaymentSlideOverProps) {
   const [loading, setLoading] = useState(false);
+  const [projects, setProjects] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     customer: "",
     projectId: "",
@@ -24,6 +25,24 @@ export default function PaymentSlideOver({ isOpen, onClose, onSave }: PaymentSli
     date: new Date().toISOString().split('T')[0],
     reference: ""
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch(`${API_BASE}/projects`)
+        .then(r => r.json())
+        .then(data => { if (Array.isArray(data)) setProjects(data); })
+        .catch(console.error);
+    }
+  }, [isOpen]);
+
+  const handleProjectSelect = (projectId: string) => {
+    const project = projects.find(p => p.code === projectId);
+    setFormData(prev => ({
+      ...prev,
+      projectId,
+      customer: project?.customer?.name || prev.customer
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,15 +124,21 @@ export default function PaymentSlideOver({ isOpen, onClose, onSave }: PaymentSli
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-muted-foreground">Project ID (Optional)</label>
+                  <label className="text-[10px] font-bold text-muted-foreground">Project (Optional)</label>
                   <div className="relative">
-                    <Hash size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <input 
-                      className="w-full h-11 bg-muted/40 rounded-xl pl-10 pr-4 text-sm border border-transparent focus:border-primary focus:outline-none transition-all"
-                      placeholder="SVK-2025-XXX"
+                    <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                    <select
+                      className="w-full h-11 bg-muted/40 rounded-xl px-4 pr-10 text-sm border border-transparent focus:border-primary focus:outline-none transition-all appearance-none cursor-pointer font-medium"
                       value={formData.projectId}
-                      onChange={(e) => setFormData({...formData, projectId: e.target.value})}
-                    />
+                      onChange={(e) => handleProjectSelect(e.target.value)}
+                    >
+                      <option value="">— Select Project —</option>
+                      {projects.map(p => (
+                        <option key={p.id} value={p.code}>
+                          {p.code} — {p.customer?.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>
