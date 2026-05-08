@@ -166,7 +166,7 @@ export default function Tracker() {
                   <Clock size={14} /> Project Tracking
                 </div>
                 <h1 className="text-3xl font-display mb-2">
-                  Hello, {project.customerName}
+                  Hello, {project.customerName || project.customer?.name || project.title?.split(" - ")[0] || "Valued Customer"}
                 </h1>
                 <p className="text-muted-foreground">
                   Detailed status of your {project.furnitureType}

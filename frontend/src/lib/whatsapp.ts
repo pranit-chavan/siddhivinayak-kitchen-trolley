@@ -43,21 +43,31 @@ export function buildContactMessage(form: { name: string; phone: string; address
 }
 
 export function buildQuotationMessage(project: any, pdfUrl: string = ""): string {
-  const customerName = project?.customer?.split(" ")[0] || "Customer";
-  const type = project?.type || "Furniture";
-  const trackerLink = generateTrackerLink(project?.id || "N/A");
+  // project.customer is the name string in the ERP table mapping
+  const customerName = (typeof project?.customer === "string"
+    ? project.customer
+    : project?.customer?.name || project?.customerName || "Customer"
+  ).split(" ")[0];
+  const type = project?.type || project?.furnitureType || "Furniture";
+  const code = project?.id || project?.code || "N/A";
+  const trackerLink = generateTrackerLink(code);
 
   return `Dear ${customerName}, your quotation for ${type} is ready.\n\n` +
          `View PDF: ${pdfUrl || "Attached Below"}\n\n` +
-         `Tracker Link: ${trackerLink}`;
+         `Track your project here: ${trackerLink}`;
 }
 
 export function buildOrderConfirmationMessage(project: any): string {
-  const customerName = project?.customer?.split(" ")[0] || "Customer";
-  const trackerLink = generateTrackerLink(project?.id || "N/A");
+  // project.customer is the name string in the ERP table mapping
+  const customerName = (typeof project?.customer === "string"
+    ? project.customer
+    : project?.customer?.name || project?.customerName || "Customer"
+  ).split(" ")[0];
+  const code = project?.id || project?.code || "N/A";
+  const trackerLink = generateTrackerLink(code);
 
-  return `*Order Confirmed!*\n\n` +
-         `Dear ${customerName},\nThank you for choosing Siddhivinayak Kitchen Trolley System. Your order (${project?.id}) has been confirmed and moved to Manufacturing.\n\n` +
-         `You can track your project's live progress at any time here:\n${trackerLink}\n\n` +
-         `- Sachin Kuwar`;
+  return `*Order Confirmed! 🎉*\n\n` +
+         `Dear ${customerName},\nThank you for choosing Siddhivinayak Kitchen Trolley System. Your project *(${code})* has been confirmed.\n\n` +
+         `📍 Track your live project progress here:\n${trackerLink}\n\n` +
+         `— Sachin Kuwar, SVK Kitchens`;
 }
