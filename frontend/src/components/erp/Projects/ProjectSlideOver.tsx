@@ -1,4 +1,4 @@
-import { X, Save, Ruler, User, Phone, MapPin, Calendar, FileText } from "lucide-react";
+import { X, Save, Ruler, User, Phone, MapPin, Calendar, FileText, Trash2, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
@@ -38,11 +38,9 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
     type: furnitureTypes[0],
     status: "Inquiry",
     date: new Date().toISOString().split('T')[0],
-    measurements: {
-      width: "",
-      height: "",
-      depth: ""
-    },
+    measurements: [
+      { name: "Main Kitchen Counter", width: "", height: "", depth: "" }
+    ],
     notes: ""
   });
 
@@ -56,7 +54,7 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
         type: furnitureTypes.includes(initialData?.interest) ? initialData?.interest : furnitureTypes[0],
         status: "Inquiry",
         date: new Date().toISOString().split('T')[0],
-        measurements: { width: "", height: "", depth: "" },
+        measurements: [{ name: "Main Kitchen Counter", width: "", height: "", depth: "" }],
         notes: initialData ? `Source: Web Portfolio Inquiry` : ""
       });
     }
@@ -116,6 +114,23 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
       if (!projectRes.ok) throw new Error("Failed to create project");
       const projectData = await projectRes.json();
       
+      // 3. Save Measurements
+      const validMeasurements = formData.measurements.filter(m => m.name && m.width && m.height && m.depth);
+      if (validMeasurements.length > 0) {
+        await fetch(`${API_BASE}/projects/${projectData.id}/measurements`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rooms: validMeasurements.map(m => ({
+              name: m.name,
+              width: parseInt(m.width, 10) || 0,
+              height: parseInt(m.height, 10) || 0,
+              depth: parseInt(m.depth, 10) || 0,
+            }))
+          })
+        });
+      }
+
       // Re-map it slightly for the frontend table
       onSave({
         ...formData,
@@ -256,49 +271,99 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-primary">
                   <Ruler size={18} />
-                  <h3 className="font-bold text-sm uppercase tracking-wider">Room Measurements (cm)</h3>
+                  <h3 className="font-bold text-sm uppercase tracking-wider">Room Measurements (MM)</h3>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase">Width</label>
-                    <input 
-                      type="number"
-                      className="w-full h-11 bg-muted/40 rounded-xl px-4 text-sm border border-transparent focus:border-primary focus:outline-none transition-all"
-                      placeholder="W"
-                      value={formData.measurements.width}
-                      onChange={(e) => setFormData({
-                        ...formData, 
-                        measurements: {...formData.measurements, width: e.target.value}
-                      })}
-                    />
+                
+                {formData.measurements.map((measurement, index) => (
+                  <div key={index} className="space-y-3 p-4 bg-muted/20 rounded-2xl border border-border/50 relative">
+                    {formData.measurements.length > 1 && (
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          const newMeasurements = [...formData.measurements];
+                          newMeasurements.splice(index, 1);
+                          setFormData({...formData, measurements: newMeasurements});
+                        }}
+                        className="absolute right-3 top-3 text-red-500 hover:bg-red-50 p-1.5 rounded-md transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
+                    
+                    <div className="space-y-2 pr-8">
+                      <label className="text-[10px] font-bold text-muted-foreground uppercase">Measurement Name</label>
+                      <input 
+                        className="w-full h-10 bg-background rounded-lg px-3 text-sm border border-border focus:border-primary focus:outline-none transition-all"
+                        placeholder="e.g. Wardrobe, Kitchen Island"
+                        value={measurement.name}
+                        onChange={(e) => {
+                          const newM = [...formData.measurements];
+                          newM[index].name = e.target.value;
+                          setFormData({...formData, measurements: newM});
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase">Width</label>
+                        <input 
+                          type="number"
+                          className="w-full h-10 bg-background rounded-lg px-3 text-sm border border-border focus:border-primary focus:outline-none transition-all"
+                          placeholder="W"
+                          value={measurement.width}
+                          onChange={(e) => {
+                            const newM = [...formData.measurements];
+                            newM[index].width = e.target.value;
+                            setFormData({...formData, measurements: newM});
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase">Height</label>
+                        <input 
+                          type="number"
+                          className="w-full h-10 bg-background rounded-lg px-3 text-sm border border-border focus:border-primary focus:outline-none transition-all"
+                          placeholder="H"
+                          value={measurement.height}
+                          onChange={(e) => {
+                            const newM = [...formData.measurements];
+                            newM[index].height = e.target.value;
+                            setFormData({...formData, measurements: newM});
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase">Depth</label>
+                        <input 
+                          type="number"
+                          className="w-full h-10 bg-background rounded-lg px-3 text-sm border border-border focus:border-primary focus:outline-none transition-all"
+                          placeholder="D"
+                          value={measurement.depth}
+                          onChange={(e) => {
+                            const newM = [...formData.measurements];
+                            newM[index].depth = e.target.value;
+                            setFormData({...formData, measurements: newM});
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase">Height</label>
-                    <input 
-                      type="number"
-                      className="w-full h-11 bg-muted/40 rounded-xl px-4 text-sm border border-transparent focus:border-primary focus:outline-none transition-all"
-                      placeholder="H"
-                      value={formData.measurements.height}
-                      onChange={(e) => setFormData({
-                        ...formData, 
-                        measurements: {...formData.measurements, height: e.target.value}
-                      })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase">Depth</label>
-                    <input 
-                      type="number"
-                      className="w-full h-11 bg-muted/40 rounded-xl px-4 text-sm border border-transparent focus:border-primary focus:outline-none transition-all"
-                      placeholder="D"
-                      value={formData.measurements.depth}
-                      onChange={(e) => setFormData({
-                        ...formData, 
-                        measurements: {...formData.measurements, depth: e.target.value}
-                      })}
-                    />
-                  </div>
-                </div>
+                ))}
+                
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData({
+                      ...formData, 
+                      measurements: [...formData.measurements, { name: "", width: "", height: "", depth: "" }]
+                    });
+                  }}
+                  className="w-full py-3 border border-dashed border-primary text-primary rounded-xl text-sm font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Plus size={16} />
+                  Add Another Measurement
+                </button>
               </div>
 
               {/* Status & Notes */}

@@ -70,8 +70,8 @@ export class ProjectsController {
     return this.measurementsService.getCurrent(id);
   }
 
+  @Public()
   @Post(':id/measurements')
-  @Roles(UserRole.OWNER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Create a new measurement set for a project' })
   createMeasurements(
     @Param('id') id: string,
