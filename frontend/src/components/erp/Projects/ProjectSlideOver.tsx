@@ -124,6 +124,7 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
         location: projectData.location,
         type: projectData.furnitureType,
         status: formData.status, // keep frontend label for now
+        backendStatus: backendStatus,
         date: formData.date,
         customer: formData.customer
       });

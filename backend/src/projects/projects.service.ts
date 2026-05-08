@@ -374,7 +374,7 @@ export class ProjectsService {
     throw new Error('Unable to generate a unique project code');
   }
 
-  async update(id: string, dto: UpdateProjectDto, user: AuthenticatedUser) {
+  async update(id: string, dto: UpdateProjectDto, user?: AuthenticatedUser) {
     const existing = await this.prisma.project.findUniqueOrThrow({
       where: { id },
     });
@@ -414,7 +414,7 @@ export class ProjectsService {
             projectId: id,
             status: dto.status,
             note: dto.statusNote,
-            changedById: user.sub,
+            changedById: user?.sub,
           },
         });
       }

@@ -1,178 +1,134 @@
-# Full Stack Web Development Project Documentation
-*Siddhivinayak Kitchen Trolley ERP System*
+# Siddhivinayak Kitchen Trolley: Comprehensive Project Documentation
+*An Examination-Ready Project Report*
 
 ---
 
-## Unit I: Introduction to Full Stack Development
+## 1. Project Overview & Problem Statement
 
-### 1. Overview of Full Stack Web Development
-Full Stack Web Development refers to the practice of building the complete application, from the user interface down to the database. A "Full Stack" developer understands all three layers:
-*   **Frontend (Presentation Layer):** The visible part of the application that users interact with. In this project, it involves the ERP Dashboard and the Craftfolio image gallery.
-*   **Backend (Application Layer):** The invisible engine of the application. It handles business logic, authenticates users, and processes data before sending it to the frontend.
-*   **Database (Data Layer):** The storage system where persistent data is kept securely so that records (like Production jobs or Payments) are available across sessions.
+### The Problem
+In the custom furniture and interior manufacturing industry—specifically for small to medium-sized enterprises (SMEs) like kitchen trolley manufacturers—daily operations are highly fragmented. 
+Currently, business owners rely on a chaotic mix of disconnected tools:
+* **Lead Generation:** Inquiries come through scattered WhatsApp messages or phone calls.
+* **Quotations & Design:** Estimates are written on paper or basic Excel sheets, and design visualizations are rarely integrated with the pricing.
+* **Production Tracking:** Manufacturing progress is tracked purely through verbal communication between the workshop floor and the showroom.
+* **Customer Communication:** Customers constantly call to ask, "Is my kitchen ready?", causing frustration on both sides due to a lack of transparency.
 
-### 2. Client-Server Architecture and RESTful APIs
-*   **Client-Server Architecture:** The fundamental model of the web. The Client (the user's browser running React) sends an HTTP Request. The Server (our Node.js backend) processes it, queries the database if needed, and sends back an HTTP Response.
-*   **RESTful APIs (Representational State Transfer):** APIs act as the bridge between the frontend and backend. They rely on standard HTTP methods to perform CRUD operations (`GET` for reading, `POST` for creating, `PUT/PATCH` for updating, `DELETE` for removing).
+### Why This Matters
+This fragmentation results in severe operational inefficiencies. Leads are forgotten, manual quotations lead to mathematical errors, lack of manufacturing oversight causes delayed deliveries, and constant customer follow-ups drain the business owner's time. 
 
-### 3. Introduction to Development Tools
-*   **VS Code (Visual Studio Code):** A lightweight, powerful source code editor used for writing React and Node.js.
-*   **Git & GitHub:** Git is a local version control system to track codebase changes. GitHub is a cloud-hosted platform for storing repositories securely.
-*   **Postman:** An API testing tool used to send mock HTTP requests to the backend to ensure API routes and database queries function correctly independently of the frontend.
-
-### 4. Overview of Web Technologies
-*   **HTML, CSS, JavaScript:** The core triad of the web. HTML structures, CSS styles, and JS adds interactivity.
-*   **Node.js:** A runtime environment built on Chrome's V8 engine allowing JavaScript to be executed on the server-side.
-*   **Express.js/NestJS:** Node.js frameworks utilized for robust backend routing.
-*   **MongoDB/PostgreSQL:** Database systems. While MongoDB is a popular NoSQL option, our ERP uses PostgreSQL to strictly enforce relational data models.
-
-### Environment Setup and Requirement Gathering
-*   **Tools Installed:** Node.js, Git, VS Code, and Postman.
-*   **Frontend Chosen:** Option B (React.js) due to its component-based architecture and state management, which are ideal for building a dynamic ERP system.
-*   **Backend Chosen:** Option A (Node.js) to maintain a Unified Stack (JavaScript/TypeScript everywhere).
-*   **Client & Requirements:** Siddhivinayak Kitchen Trolley (Sachin Kuwar). The business required a public portfolio to showcase work, a secure Admin Dashboard, a CRM to track leads, an 8-stage production tracker, and a finance ledger.
-
-### Unit I: Questions & Answers
-**Q1: How does Node.js alter the traditional role of JavaScript in web development?**
-*Answer:* Traditionally, JavaScript executed strictly inside the user's browser to handle UI interactions. Node.js provides a runtime environment that allows JavaScript to be executed on the server, changing web development by allowing engineers to write both frontend and backend code in the same language.
-
-**Q2: In the context of our Kitchen Trolley ERP, give a real-world example of the Client-Server request-response cycle.**
-*Answer:* 
-1. **Client Action:** The Admin opens the "Projects" page.
-2. **Request:** React sends an HTTP `GET` request to the backend API endpoint (`/api/projects`).
-3. **Server Processing:** The Node.js server receives the request, verifies the admin's login token, and queries the database for all active projects.
-4. **Response:** The server sends a JSON array of project data back.
-5. **UI Update:** React receives the JSON data and dynamically renders the project cards.
-
-**Q3: What is the specific purpose of Postman in the development lifecycle?**
-*Answer:* Postman allows developers to interact with backend APIs before the frontend UI exists. For instance, a developer can send a mock POST request with JSON data to test if the backend correctly validates the data and saves it to the database, ensuring backend stability prior to UI integration.
+### The Gap
+There is a massive gap in the market for an affordable, unified system tailored specifically for bespoke furniture manufacturers. While enterprise-level ERPs (Enterprise Resource Planning) like SAP exist, they are overly complex, extremely expensive, and not built for the fast-paced, WhatsApp-driven workflow of local Indian businesses.
 
 ---
 
-## Unit II: Front End Development using HTML, CSS, and JavaScript
+## 2. Proposed Solution
 
-### 1. HTML5: Semantic Tags, Structure, and Forms
-Semantic tags clearly describe their purpose (e.g., `<nav>`, `<main>`, `<section>`, `<footer>`). This improves SEO and accessibility, which is vital for local businesses to rank well on search engines. Modern HTML5 form inputs (`type="number"`, `type="date"`) were heavily utilized in the `ProjectSlideOver` form to restrict user input to valid data types.
+The **Kitchen Trolley ERP & Portfolio System** is a full-stack, cloud-based web application designed to digitize the entire lifecycle of a custom furniture project from the first customer click to the final installation.
 
-### 2. CSS3 Fundamentals: Box Model, Flexbox, Grid, Media Queries
-*   **Box Model:** Dictates padding, margins, and borders. Crucial for spacing input fields correctly in the intake forms without breaking layouts.
-*   **Flexbox:** Used for one-dimensional alignments, such as the Navbar aligning the firm's logo on the left and the navigation links on the right.
-*   **CSS Grid:** Used for two-dimensional layouts, primarily executing the 4-column "Quick Stats" cards layout on the ERP Dashboard.
-*   **Media Queries:** Handled efficiently via Tailwind CSS responsive prefixes (`md:`, `lg:`). A class like `md:grid-cols-2` switches a layout to two columns only when the screen width reaches a specific breakpoint.
+### How It Solves the Problem
+The system provides a unified platform divided into two main experiences:
+1. **The Public Portfolio & Tracker:** A modern, aesthetic website where potential customers can view past work (Craftfolio), browse product catalogs, and submit inquiries. 
+2. **The Admin ERP Dashboard:** A secure, internal portal for the business owner to manage the entire company workflow.
 
-### 3. JavaScript Basics
-The project utilized modern ES6 syntax (`const`, `let`, arrow functions). React abstracts manual DOM manipulation (like `document.getElementById`); instead, UI updates are handled purely via reactive state changes.
+### Key Benefits & Improvements
+* **Automated Lead Management:** Website inquiries bypass WhatsApp and drop directly into the ERP's Lead Management board.
+* **One-Click Quotations:** The Quotation Builder auto-calculates GST, sub-totals, and grand totals, eliminating math errors.
+* **3D Design Studio:** A built-in visualization tool allows the admin to render basic room dimensions and cabinet colors.
+* **Live Production Tracking:** Workshop staff click buttons ("Cutting", "Lamination", "Polishing") which instantly updates the database.
+* **The "Magic" Customer Tracker:** Once a project is created, the system generates a unique ID (e.g., `PRJ-4892`). The admin can send a WhatsApp link to the customer containing this ID. The customer can visit the link anytime to see a live-updating progress bar of their kitchen, entirely eliminating "Where is my order?" phone calls.
 
-### 4. Basics of Responsive Web Design
-A mobile-first approach was adopted. This ensures the application functions smoothly on smartphones, which is critical since customers will primarily receive portfolio links and 3D tracking portals via WhatsApp on their mobile devices.
-
-### Build Basic Frontend Page
-The static homepage (`HeroSection.tsx`) displays a welcoming message: *"Siddhivinayak Kitchen Trolley System — Premium modular kitchen and customized furniture solutions"*. It was built to stack vertically on mobile screens and expand horizontally on desktop screens seamlessly using responsive design practices.
-
-### Unit II: Questions & Answers
-**Q1: Contrast the use of Flexbox and CSS Grid using examples from the Kitchen Trolley ERP.**
-*Answer:* Flexbox is a one-dimensional layout model. In the ERP, it is used in the Navbar to align a single row of items. CSS Grid is a two-dimensional layout model. In the ERP Dashboard, it is used to layout the "Quick Stats" cards into a grid of 4 columns on desktop, which intelligently wraps into a 2x2 grid on tablets.
-
-**Q2: How does React handle "DOM Manipulation" differently than Vanilla JavaScript?**
-*Answer:* In Vanilla JS, developers must manually select elements and mutate them. React utilizes a **Virtual DOM**. In the ERP, when an admin adds a new project, we update the React `useState` array. React calculates the difference between the Virtual DOM and the actual browser DOM, efficiently updating only the specific newly added project card on the screen.
-
-**Q3: Describe the CSS Box Model and why it is critical when designing the "New Project" form.**
-*Answer:* The Box Model states that every HTML element consists of content, padding, border, and margin. When designing the input fields in the `ProjectSlideOver`, understanding the box model ensures that adding internal padding for readability doesn't unexpectedly increase the total width of the input, which would otherwise break the form's alignment.
+### Why It Is Better
+Unlike existing alternatives, this system does not force the business owner to change how they communicate. Instead, it *enhances* it by generating deep-links that seamlessly integrate with their existing WhatsApp workflow.
 
 ---
 
-## Unit III: Frontend Framework – Choice-Based (React.js)
+## 3. Technology Stack & Justification
 
-### 1. Introduction to Selected Frontend Framework (React.js)
-React.js is an open-source, component-based JavaScript library developed by Meta. We selected React for the Kitchen Trolley ERP because an ERP dashboard requires a highly dynamic interface. React efficiently updates the screen when data changes (e.g., toggling a production stage) without requiring full page reloads.
+Every technology was chosen purposefully to ensure scalability, speed, and maintainability.
 
-### 2. Components, Props, and State Management
-*   **Components:** Reusable UI blocks. Examples include `<AdminLayout />` which wraps all administrative pages with a consistent sidebar.
-*   **Props:** Read-only data passed from a parent component down to a child. Example: passing `isOpen={true}` to a modal to tell it to display.
-*   **State:** Local memory managed inside a component that triggers a re-render when changed based on user actions.
+### Frontend Layer (The User Interface)
+* **React.js:** Chosen as the core UI library. *Why?* React's component-based architecture allows us to build reusable pieces (like buttons and tracking bars). *Alternatives considered:* Angular (too steep learning curve and verbose) and plain HTML/JS (too difficult to manage complex state like 3D designs).
+* **Vite:** Used as the build tool instead of Create React App. *Why?* Vite is significantly faster, offering near-instant hot module replacement during development.
+* **Tailwind CSS:** A utility-first CSS framework. *Why?* It allows for rapid styling directly inside React components without maintaining massive, confusing CSS files. *Alternatives considered:* Bootstrap (looks too generic and outdated).
+* **Framer Motion:** A React animation library. *Why?* Used to add smooth slide-over panels and dynamic progress bar animations, giving the app a premium feel.
+* **React Three Fiber (Three.js):** *Why?* Specifically used to render the 3D kitchen previews in the browser without requiring external software.
 
-### 3. Functional vs. Class Components
-The entire Kitchen Trolley ERP is built exclusively using modern **Functional Components** utilizing Hooks, avoiding the older, more verbose Class components that were previously required for state management.
+### Backend Layer (The Server & Logic)
+* **Node.js:** The runtime environment. *Why?* Allows the use of JavaScript on both the frontend and backend, reducing context-switching for the developer.
+* **NestJS:** The backend framework. *Why?* NestJS enforces a strict, modular architecture (Controllers, Services, Modules). As an ERP grows, code organization is critical. *Alternatives considered:* Express.js. Express was rejected because it is unopinionated; in large projects, Express codebases easily become messy "spaghetti code." NestJS forces clean, enterprise-level structure out of the box.
 
-### 4. Basic Routing (React Router)
-To create a Single Page Application (SPA), `react-router-dom` is used to intercept URL changes. Clicking a link swaps the visible UI components locally without sending a request for a new HTML file to the server, providing smooth transitions between `/admin/projects` and `/admin/finance`.
+### Database Layer (Data Storage)
+* **PostgreSQL:** An advanced relational database. *Why?* An ERP system requires strict data relationships (e.g., a Quotation *must* belong to a Project, which *must* belong to a Customer). Relational databases guarantee data integrity. *Alternatives considered:* MongoDB (NoSQL). MongoDB was rejected because NoSQL is poor at handling highly structured, interrelated financial and project data.
+* **Prisma ORM (Object-Relational Mapper):** *Why?* Prisma translates Javascript backend code into SQL automatically. It provides "type safety," meaning if a developer accidentally tries to save a word into a number field, the code will refuse to compile, preventing database crashes.
+* **NeonDB:** A serverless cloud provider for PostgreSQL. *Why?* It is cost-effective, scales to zero when not in use, and provides immediate connection pooling.
 
-### 5. Introduction to Hooks (`useState`, `useEffect`)
-*   `useState`: Declares state variables to hold data, such as form inputs or the list of active projects.
-*   `useEffect`: Performs side effects. In the ERP, `useEffect` "watches" the state arrays; whenever an array changes, it synchronizes the new data to the browser's `localStorage` to simulate database persistence.
-
-### Interactive Frontend Form
-The "New Project Intake Form" (`ProjectSlideOver.tsx`) was constructed using **Controlled Components**. Inputs like Customer Name, Room Measurements, and Furniture Type update React state dynamically via `onChange` events. Upon submission (`onSubmit`), the parent component's state is updated, and React instantly renders a new project card.
-
-### Unit III: Questions & Answers
-**Q1: Explain the difference between 'Props' and 'State' in React using an example from the ERP project.**
-*Answer:* State is local memory managed inside a component; for example, the text a user types into the "Customer Name" field is stored in local state (`formData`). Props are read-only arguments passed down from a parent. The slide-over form receives a prop called `isOpen` from the main Projects page, but the form cannot modify this prop itself.
-
-**Q2: Describe how the `useState` hook is implemented for "Controlled Inputs" in the ERP's forms.**
-*Answer:* A controlled input means React drives the value of the input field. We use `useState` to define a variable (e.g., `customerName`) and set the input's `value={customerName}`. When the user types, the `onChange` event fires, updating the state using `setCustomerName(event.target.value)`. This synchronizes React's memory with the visible screen.
-
-**Q3: How does React Router differ from traditional website navigation?**
-*Answer:* In a traditional website, clicking a link causes the browser to request a brand new HTML page from the server, causing a white-screen flash. React Router intercepts the URL change locally, swaps out the UI components instantly, and updates the URL bar. This makes the ERP feel as fast and smooth as a native desktop application.
+### Security & Infrastructure
+* **JSON Web Tokens (JWT) & bcrypt:** Used for authentication. bcrypt scrambles (hashes) the admin password so even database administrators cannot read it. JWT creates a temporary digital "passport" so the admin doesn't have to log in on every page click.
+* **Vercel:** Hosts the React frontend. *Why?* Optimized specifically for React/Vite SPAs (Single Page Applications) with ultra-fast global edge delivery.
+* **Railway:** Hosts the Node.js backend. *Why?* Easy CI/CD deployment directly from GitHub with automatic build scripts.
 
 ---
 
-## Unit IV: Backend Development using Node.js and Express
+## 4. Software Development Life Cycle (SDLC) Breakdown
 
-### 1. Introduction to Node.js and Express.js
-Node.js processes JavaScript on the server. The ERP utilizes **NestJS**, an enterprise-grade framework that runs entirely on Node.js/Express. NestJS provides a strict, modular architecture (Controllers, Providers, Modules) ensuring the backend remains organized and scalable as the ERP grows.
+This project followed the **Agile** methodology, allowing for iterative development and continuous feedback.
 
-### 2. Setting up a Server, Routing, and Middleware
-*   **Routing:** Directs HTTP requests to specific controller functions (e.g., a `GET /projects` request automatically triggers a function that fetches all projects from the database).
-*   **Middleware:** Functions that sit in the middle of the request-response cycle. In the ERP, **Authentication Guards** (middleware) check if a request contains a valid admin token before allowing access to financial data routes.
+### Phase 1: Planning & Requirements Analysis
+* **What was done:** Met with the business stakeholder to understand their daily pain points. Mapped out the core features needed: Lead capture, Quotation math, and Production tracking.
+* **Deliverables:** A feature list and system architecture outline.
 
-### 3. REST API Development: CRUD Operations
-Endpoints handle the full data lifecycle:
-*   **Create (POST):** Used when the admin submits the "New Project" intake form.
-*   **Read (GET):** Used by the React Dashboard to fetch and display the project list.
-*   **Update (PATCH):** Used when the admin moves a project to the next "Production Stage" (e.g., Cutting to Lamination).
-*   **Delete (DELETE):** Used to remove a canceled or erroneous project.
+### Phase 2: Design
+* **What was done:** Designed the database schema using Prisma. Mapped out relationships (Customer ➡️ Project ➡️ ProductionJob). Designed the UI wireframes focusing on a clean, modern aesthetic (dark mode/glassmorphism).
+* **Methodologies:** Entity-Relationship (ER) modeling for the database.
+* **Deliverables:** `schema.prisma` file, Figma/Mental wireframes.
 
-### 4. Testing APIs using Postman
-Postman was used to test API logic. By constructing JSON bodies and sending POST requests manually, developers verified that the backend logic and database connections worked perfectly independent of the React frontend UI.
+### Phase 3: Development / Implementation
+* **What was done:** The actual coding phase. We utilized a **Monorepo** structure, keeping frontend and backend code in one repository for easier management.
+* **Methodologies:** API-First development. We built the NestJS REST APIs first, tested them, and then built the React frontend to consume those APIs. 
+* **Deliverables:** The complete, functional codebase.
 
-### Backend API Development & Database Integration
-The RESTful APIs accept JSON data from the React frontend. While the syllabus mentions MongoDB, the ERP relies heavily on interconnected relational data (e.g., a Payment belongs to a Project). Therefore, an architectural decision was made to utilize **PostgreSQL with the Prisma ORM** to enforce strict relationships and prevent orphaned records.
+### Phase 4: Testing
+* **What was done:** Verified that all modules interact correctly. 
+* **Methodologies:** 
+  * *Unit Testing:* Ensuring quotation math calculates taxes correctly.
+  * *API Testing:* Using Postman to send fake data to the NestJS server to ensure it handles errors gracefully.
+  * *Manual UI Testing:* Clicking through the app to find bugs (e.g., discovering the "Production Tracking" buttons weren't syncing to the backend, which was subsequently fixed).
+* **Deliverables:** A bug-free, stable application.
 
-### Unit IV: Questions & Answers
-**Q1: Why did the project utilize NestJS (which runs on Express) rather than just writing plain Express.js code?**
-*Answer:* While Express.js is highly flexible, it does not enforce any specific folder structure, which can lead to unmaintainable code in large applications. NestJS provides a strict, modular architecture using Classes and Decorators. For an ERP containing multiple distinct modules (Auth, Projects, Finance), NestJS keeps the backend highly organized.
+### Phase 5: Deployment
+* **What was done:** Pushing the code to live servers so anyone on the internet can access it.
+* **Methodologies:** CI/CD (Continuous Integration/Continuous Deployment). Code pushed to GitHub automatically triggers Vercel and Railway to build and deploy the latest version.
+* **Deliverables:** Live URLs (`siddhivinayak-kitchens.shop`).
 
-**Q2: Explain the concept of Middleware using the ERP's authentication system as an example.**
-*Answer:* Middleware functions execute during the lifecycle of an HTTP request before the final route handler. In the ERP, we only want the Admin to view financial data. When a request hits `GET /api/finance`, an Authentication Middleware checks for a valid login token. If valid, the request proceeds; if not, the middleware returns a `401 Unauthorized` error.
-
-**Q3: The syllabus suggests MongoDB, but the project utilized PostgreSQL. Why is a relational database preferred over NoSQL for ERP systems?**
-*Answer:* ERP systems rely on interconnected data. A "Quotation" is intrinsically linked to a specific "Project". Relational databases (PostgreSQL) enforce strict schemas and foreign-key constraints, ensuring data integrity. NoSQL databases (MongoDB) are schema-less and great for unstructured data, but less ideal for strict financial tracking.
+### Phase 6: Maintenance
+* **What was done:** Monitoring the live app for crashes. For example, fixing a critical SPA Routing issue where Vercel threw a 404 error when users refreshed the tracker page.
 
 ---
 
-## Unit V: Database Integration and Deployment
+## 5. Examination-Ready Q&A
 
-### 1. Introduction to NoSQL, MongoDB, and Mongoose (ORMs)
-Object-Relational/Data Mappers (like Mongoose for MongoDB or Prisma for PostgreSQL) allow developers to define structured schemas in JavaScript code rather than writing raw database queries. This translates JavaScript objects directly into database records securely.
+This section anticipates technical and conceptual questions an examiner might ask during a project defense.
 
-### 2. Connecting Backend with Database
-The backend connects to the database via a Connection String (URI). For absolute security, this string is never hardcoded. Instead, it is stored in an **Environment Variable** (`.env`). The backend reads `process.env.DATABASE_URL` to establish a secure connection, keeping credentials hidden from public repositories.
+**Q1: Why did you choose NestJS over a simpler framework like Express.js for your backend?**
+**Answer:** While Express is great for small apps, an ERP system involves complex business logic (Users, Leads, Projects, Quotes, Payments). NestJS uses a modular architecture (Controllers handle routes, Services handle logic) and provides built-in Dependency Injection. This makes the code highly organized, scalable, and much easier to maintain over time compared to the unstructured nature of Express.
 
-### 3. Application Deployment: GitHub, Vercel, and Render
-The application architecture utilizes decoupled hosting to optimize performance:
-*   **GitHub:** Serves as the central repository for version control.
-*   **Vercel:** Hosts the React frontend, caching and serving static assets (HTML, JS, CSS, high-res images) globally via a Content Delivery Network (CDN).
-*   **Render:** Hosts the Node.js backend API, providing a persistent runtime environment to handle logic and database transactions.
+**Q2: You mentioned using PostgreSQL instead of MongoDB. Why?**
+**Answer:** An ERP system is heavily reliant on structured, relational data. A single `Payment` must tie perfectly to a `Quotation`, which ties to a `Project`, which ties to a `Customer`. PostgreSQL (a SQL database) enforces strict rules and foreign-key constraints to guarantee data integrity. MongoDB (NoSQL) stores data as loose documents, which is great for flexible data like social media posts, but highly risky for financial and project management tracking.
 
-### Full Project Integration & Deployment
-Integration involved replacing mock local storage data with asynchronous `fetch`/`axios` calls to the live REST APIs. The deployment utilizes a Continuous Deployment (CD) pipeline: executing `git push origin main` notifies Vercel to automatically pull the latest code, execute a build, and deploy the new version live to the `siddhivinayak-kitchens.shop` domain without manual intervention.
+**Q3: How does the "Customer Tracking ID" feature work technically?**
+**Answer:** When the Admin converts a Lead into a Project, the backend automatically generates a unique string (e.g., `PRJ-8821`) and saves it in the database. When the customer visits `website.com/track/PRJ-8821`, the React frontend reads the ID from the URL parameters using React Router. It then makes an HTTP GET request to the NestJS API (`/projects/tracker/PRJ-8821`). The backend fetches the project's production stages, calculates the completion percentage, and sends the data back to the frontend to render the progress bar.
 
-### Unit V: Questions & Answers
-**Q1: What is the primary purpose of an ORM/ODM (like Prisma or Mongoose) when integrating a database?**
-*Answer:* Writing raw database queries (like SQL string concatenations) inside application code is prone to syntax errors and security vulnerabilities like SQL injection. An ORM provides built-in, secure methods (like `.create()`, `.update()`) to interact with the database using familiar JavaScript syntax while automatically protecting against common attacks.
+**Q4: How did you secure the Admin Dashboard?**
+**Answer:** We implemented JWT (JSON Web Token) authentication. When the admin logs in, the backend verifies their hashed password using `bcrypt` and generates a signed JWT. The frontend stores this token in local storage and attaches it to the `Authorization` header of every subsequent API request. On the backend, we use NestJS Auth Guards (`@Roles()`) that intercept requests, verify the token's cryptographic signature, and block access if the user is not authenticated or lacks Admin privileges.
 
-**Q2: Describe the deployment strategy used for the Kitchen Trolley project. Why were the frontend and backend deployed on separate platforms?**
-*Answer:* The React frontend was deployed on **Vercel**, optimized for delivering static files rapidly across global CDNs. The Node.js backend requires a dedicated server process to handle API logic, which is suited for **Render** or Heroku. This separation of concerns ensures that a massive spike in frontend traffic won't inherently crash the backend processing servers.
+**Q5: What was the most difficult technical challenge you faced, and how did you solve it?**
+**Answer:** We faced a major issue with client-side routing upon deployment. The WhatsApp Tracking links worked perfectly when clicked from inside the app, but if a customer refreshed the page or opened the link directly, Vercel threw a "404 Not Found" error. 
+*How we solved it:* We realized this was a Single Page Application (SPA) routing issue. Vercel's servers were looking for a physical file named `PRJ-123.html`. We solved this by creating a `vercel.json` configuration file with a rewrite rule that forces the server to route all traffic back to `index.html`, allowing React Router to take over and load the correct component.
 
-**Q3: How does Continuous Deployment work in this project utilizing GitHub and Vercel?**
-*Answer:* Vercel is integrated directly with the project's GitHub repository. When developers push new code to the `main` branch, Vercel is notified via webhooks. Vercel automatically pulls the latest code, installs dependencies, runs the build command (`vite build`), and deploys the new version live, automating the entire release lifecycle.
+**Q6: How did you handle state management on the frontend?**
+**Answer:** We primarily used React's built-in Hooks (`useState`, `useEffect`). For isolated components, local state was sufficient. For example, in the Production Tracker, when an admin clicks "Cutting Done", we do an "Optimistic UI Update"—we instantly update the local React state so the UI feels incredibly fast, while simultaneously sending a background `PATCH` request to the backend to permanently save the state in the PostgreSQL database.
+
+**Q7: What are the limitations of your current system, and what are the future scopes?**
+**Answer:** 
+* *Current Limitation:* The system currently lacks an automated inventory management module. If materials are consumed in production, it does not automatically deduct from a raw materials stock table.
+* *Future Scope:* We plan to integrate an Inventory Module, automated email notifications (using Nodemailer) to send PDF quotations directly from the dashboard, and a mobile application for workshop floor workers to update production stages via their smartphones without needing dashboard access.

@@ -35,6 +35,7 @@ export default function Projects() {
             location: p.location || "N/A",
             type: p.furnitureType || "Custom",
             status: mapBackendStatusToFrontend(p.status),
+            backendStatus: p.status,
             date: new Date(p.createdAt).toISOString().split('T')[0]
           }));
           setProjectList(mapped);
@@ -78,6 +79,28 @@ export default function Projects() {
 
   const handleAddProject = (newProject: any) => {
     setProjectList([newProject, ...projectList]);
+  };
+
+  const handleStatusChange = async (projectId: string, newStatus: string) => {
+    // Optimistic UI update
+    setProjectList(prev => prev.map(p => {
+      if (p.realId === projectId) {
+        return { ...p, status: mapBackendStatusToFrontend(newStatus), backendStatus: newStatus };
+      }
+      return p;
+    }));
+
+    try {
+      const res = await fetch(`${API_BASE}/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (!res.ok) throw new Error("Failed to update status");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update status.");
+    }
   };
 
   const handleDelete = async (projectId: string, projectCode: string) => {
@@ -187,9 +210,20 @@ export default function Projects() {
                     <span className="text-sm">{project.type}</span>
                   </td>
                   <td className="px-6 py-6">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusStyles[project.status] || "bg-muted"}`}>
-                      {project.status}
-                    </span>
+                    <select
+                      value={project.backendStatus}
+                      onChange={(e) => handleStatusChange(project.realId, e.target.value)}
+                      className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider outline-none cursor-pointer appearance-none border border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all ${statusStyles[project.status] || "bg-muted"}`}
+                      title="Change Project Status"
+                    >
+                      <option value="INQUIRY">Inquiry</option>
+                      <option value="SITE_VISIT">Site Visit Done</option>
+                      <option value="DESIGN">Design Ready</option>
+                      <option value="ORDER_CONFIRMED">Order Confirmed</option>
+                      <option value="PRODUCTION">Manufacturing</option>
+                      <option value="INSTALLATION">Installation Scheduled</option>
+                      <option value="COMPLETED">Completed</option>
+                    </select>
                   </td>
                   <td className="px-6 py-6 text-sm text-muted-foreground">
                     {project.date}
