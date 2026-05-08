@@ -37,6 +37,7 @@ export class ProjectsController {
     return this.projectsService.getTrackerByCode(code);
   }
 
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get project details' })
   getById(@Param('id') id: string) {
