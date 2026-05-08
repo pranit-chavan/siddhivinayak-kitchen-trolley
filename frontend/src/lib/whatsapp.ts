@@ -17,6 +17,14 @@ export function openWhatsApp(message: string): void {
   window.open(finalUrl, "_blank", "noopener,noreferrer");
 }
 
+export function openWhatsAppForCustomer(phone: string, message: string): void {
+  const cleanPhone = phone.replace(/\D/g, "");
+  const finalPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+  const encodedText = encodeURIComponent(message);
+  const finalUrl = `https://wa.me/${finalPhone}?text=${encodedText}`;
+  window.open(finalUrl, "_blank", "noopener,noreferrer");
+}
+
 export function buildContactMessage(form: { name: string; phone: string; address?: string; types?: string[]; message?: string }): string {
   let msg = `*New Customer Inquiry (Website)*\n\n`;
   msg += `*Name:* ${form.name}\n`;

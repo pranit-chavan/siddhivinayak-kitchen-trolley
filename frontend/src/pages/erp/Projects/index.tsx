@@ -32,6 +32,7 @@ export default function Projects() {
             id: p.code,
             realId: p.id,
             customer: p.customer?.name || "Unknown Customer",
+            phone: p.customer?.phone || null,
             location: p.location || "N/A",
             type: p.furnitureType || "Custom",
             status: mapBackendStatusToFrontend(p.status),
@@ -242,9 +243,13 @@ export default function Projects() {
                       </button>
                       <button 
                         onClick={() => {
-                          import("@/lib/whatsapp").then(({ openWhatsApp, buildOrderConfirmationMessage }) => {
+                          import("@/lib/whatsapp").then(({ openWhatsApp, openWhatsAppForCustomer, buildOrderConfirmationMessage }) => {
                             const msg = buildOrderConfirmationMessage(project);
-                            openWhatsApp(msg);
+                            if (project.phone) {
+                              openWhatsAppForCustomer(project.phone, msg);
+                            } else {
+                              openWhatsApp(msg);
+                            }
                           });
                         }}
                         className="p-2 bg-muted hover:bg-green-50 hover:text-green-600 rounded-lg transition-colors border border-border/50" 
