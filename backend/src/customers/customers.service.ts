@@ -66,4 +66,11 @@ export class CustomersService {
       },
     });
   }
+
+  async update(id: string, dto: any) {
+    return this.prisma.customer.update({
+      where: { id },
+      data: dto,
+    });
+  }
 }

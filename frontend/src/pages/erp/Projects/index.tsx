@@ -104,6 +104,40 @@ export default function Projects() {
     }
   };
 
+  const handleEditClick = async (projectRealId: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/projects/${projectRealId}`);
+      if (!res.ok) throw new Error("Failed to fetch project details");
+      const fullProject = await res.json();
+      
+      // Transform for SlideOver
+      const editData = {
+        id: fullProject.id, // realId
+        customerId: fullProject.customerId,
+        customer: fullProject.customer?.name,
+        phone: fullProject.customer?.phone,
+        address: fullProject.addressLine1 || fullProject.customer?.addressLine1,
+        city: fullProject.city || fullProject.customer?.city,
+        type: fullProject.furnitureType,
+        status: mapBackendStatusToFrontend(fullProject.status),
+        date: fullProject.startDate ? new Date(fullProject.startDate).toISOString().split('T')[0] : "",
+        notes: fullProject.notes,
+        measurements: fullProject.measurements?.[0]?.rooms?.map((r: any) => ({
+          name: r.name,
+          width: r.width?.toString() || "",
+          height: r.height?.toString() || "",
+          depth: r.depth?.toString() || ""
+        })) || [{ name: "Main Kitchen Counter", width: "", height: "", depth: "" }]
+      };
+      
+      setLeadData(editData); // Re-using leadData for slideover data
+      setIsSlideOverOpen(true);
+    } catch (err) {
+      console.error(err);
+      alert("Error loading project details");
+    }
+  };
+
   const handleDelete = async (projectId: string, projectCode: string) => {
     if (!window.confirm(`Are you sure you want to delete project ${projectCode}? This action cannot be undone.`)) {
       return;
@@ -231,7 +265,11 @@ export default function Projects() {
                   </td>
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end gap-3">
-                      <button className="p-2 bg-muted hover:bg-primary/10 hover:text-primary rounded-lg transition-colors border border-border/50" title="Manage Status">
+                      <button 
+                        onClick={() => handleEditClick(project.realId)}
+                        className="p-2 bg-muted hover:bg-primary/10 hover:text-primary rounded-lg transition-colors border border-border/50" 
+                        title="Edit Project Details"
+                      >
                         <Settings size={16} />
                       </button>
                       <button 

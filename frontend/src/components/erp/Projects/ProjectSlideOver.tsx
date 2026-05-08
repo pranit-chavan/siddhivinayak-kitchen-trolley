@@ -54,21 +54,26 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
         type: furnitureTypes.includes(initialData?.interest) ? initialData?.interest : furnitureTypes[0],
         status: "Inquiry",
         date: new Date().toISOString().split('T')[0],
-        measurements: [{ name: "Main Kitchen Counter", width: "", height: "", depth: "" }],
-        notes: initialData ? `Source: Web Portfolio Inquiry` : ""
+        measurements: initialData?.measurements || [{ name: "Main Kitchen Counter", width: "", height: "", depth: "" }],
+        notes: initialData?.notes || (initialData ? `Source: Web Portfolio Inquiry` : "")
       });
     }
   }, [isOpen, initialData]);
+
+  const isEditing = !!initialData?.id;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
       const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api/v1";
+      const isEditing = !!initialData?.id;
       
-      // 1. Create Customer
-      const customerRes = await fetch(`${API_BASE}/customers`, {
-        method: 'POST',
+      let customerId = initialData?.customerId;
+      
+      // 1. Create or Update Customer
+      const customerRes = await fetch(`${API_BASE}/customers${isEditing ? `/${customerId}` : ""}`, {
+        method: isEditing ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.customer,
@@ -78,8 +83,9 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
           notes: formData.notes,
         })
       });
-      if (!customerRes.ok) throw new Error("Failed to create customer");
+      if (!customerRes.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'create'} customer`);
       const customerData = await customerRes.json();
+      if (!isEditing) customerId = customerData.id;
 
       // Status mapping to Prisma Enum
       const statusMap: Record<string, string> = {
@@ -94,30 +100,30 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
       
       const backendStatus = statusMap[formData.status] || "INQUIRY";
 
-      // 2. Create Project
-      const projectRes = await fetch(`${API_BASE}/projects`, {
-        method: 'POST',
+      // 2. Create or Update Project
+      const projectRes = await fetch(`${API_BASE}/projects${isEditing ? `/${initialData.id}` : ""}`, {
+        method: isEditing ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: `${formData.customer} - ${formData.type}`,
-          scope: formData.notes || "New project created from ERP",
+          scope: formData.notes || "Project details updated from ERP",
           furnitureType: formData.type,
           location: formData.city || formData.address.substring(0, 15) || "N/A",
           addressLine1: formData.address,
           city: formData.city,
           status: backendStatus,
-          customerId: customerData.id,
+          customerId: customerId,
           notes: formData.notes,
           startDate: formData.date ? new Date(formData.date).toISOString() : undefined,
         })
       });
-      if (!projectRes.ok) throw new Error("Failed to create project");
+      if (!projectRes.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'create'} project`);
       const projectData = await projectRes.json();
       
-      // 3. Save Measurements
+      // 3. Save Measurements (always creates a new version/record linked to project)
       const validMeasurements = formData.measurements.filter(m => m.name && m.width && m.height && m.depth);
       if (validMeasurements.length > 0) {
-        await fetch(`${API_BASE}/projects/${projectData.id}/measurements`, {
+        await fetch(`${API_BASE}/projects/${isEditing ? initialData.id : projectData.id}/measurements`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -134,11 +140,11 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
       // Re-map it slightly for the frontend table
       onSave({
         ...formData,
-        id: projectData.code,
-        realId: projectData.id,
+        id: isEditing ? (projectData.code || initialData.id) : projectData.code,
+        realId: isEditing ? initialData.id : projectData.id,
         location: projectData.location,
         type: projectData.furnitureType,
-        status: formData.status, // keep frontend label for now
+        status: formData.status, 
         backendStatus: backendStatus,
         date: formData.date,
         customer: formData.customer,
@@ -147,8 +153,8 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
       
       onClose();
     } catch (error) {
-      console.error("Failed to create project:", error);
-      alert("Failed to create project. Ensure backend is running.");
+      console.error(`Failed to ${isEditing ? 'update' : 'create'} project:`, error);
+      alert(`Failed to ${isEditing ? 'update' : 'create'} project. Check console for details.`);
     }
   };
 
@@ -176,8 +182,10 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
             {/* Header */}
             <div className="p-6 border-b border-border flex items-center justify-between bg-muted/20">
               <div>
-                <h2 className="text-xl font-display font-bold">New Project</h2>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Manual Intake Form</p>
+                <h2 className="text-xl font-display font-bold">{isEditing ? "Edit Project" : "New Project"}</h2>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">
+                  {isEditing ? `Editing Project ${initialData.id}` : "Manual Intake Form"}
+                </p>
               </div>
               <button 
                 onClick={onClose}
@@ -412,7 +420,7 @@ export default function ProjectSlideOver({ isOpen, onClose, onSave, initialData 
                 className="flex-[2] h-12 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-lg shadow-primary/20 text-sm"
               >
                 <Save size={18} />
-                Register Project
+                {isEditing ? "Save Changes" : "Register Project"}
               </button>
             </div>
           </motion.div>

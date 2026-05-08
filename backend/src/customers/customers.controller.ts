@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Patch, Param } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from '../common/decorators/public.decorator';
 import { CustomersService } from './customers.service';
@@ -22,5 +22,12 @@ export class CustomersController {
   @ApiOperation({ summary: 'Create a customer' })
   create(@Body() dto: CreateCustomerDto) {
     return this.customersService.create(dto);
+  }
+
+  @Public()
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a customer' })
+  update(@Param('id') id: string, @Body() dto: any) {
+    return this.customersService.update(id, dto);
   }
 }
