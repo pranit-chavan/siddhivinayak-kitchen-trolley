@@ -148,19 +148,19 @@ export default function Projects() {
          <div className="bg-background rounded-2xl p-6 border border-border shadow-sm">
             <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mb-1">In Production</p>
             <p className="text-3xl font-bold font-display text-indigo-600">
-              {projectList.filter(p => p.status === "Manufacturing").length}
+              {projectList.filter(p => p.backendStatus === "PRODUCTION").length}
             </p>
          </div>
          <div className="bg-background rounded-2xl p-6 border border-border shadow-sm">
             <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mb-1">Pending Visits</p>
             <p className="text-3xl font-bold font-display text-purple-600">
-              {projectList.filter(p => p.status === "Site Visit Done").length}
+              {projectList.filter(p => p.backendStatus === "INQUIRY").length}
             </p>
          </div>
          <div className="bg-background rounded-2xl p-6 border border-border shadow-sm">
             <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mb-1">Completed</p>
             <p className="text-3xl font-bold font-display text-green-600">
-              {projectList.filter(p => p.status === "Completed").length}
+              {projectList.filter(p => p.backendStatus === "COMPLETED").length}
             </p>
          </div>
       </div>
