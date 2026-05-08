@@ -42,7 +42,7 @@ const Footer = () => {
                 </li>
               ))}
               <li>
-                <Link to="/track/SVK-2025-042" className="text-sm text-primary font-bold hover:opacity-80 transition-opacity">
+                <Link to="/tracker" className="text-sm text-primary font-bold hover:opacity-80 transition-opacity">
                   Track My Project
                 </Link>
               </li>

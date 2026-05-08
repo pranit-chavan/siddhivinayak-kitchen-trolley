@@ -129,7 +129,7 @@ const Navbar = () => {
           </ul>
           
           <Link
-            to="/track/SVK-2025-042"
+            to="/tracker"
             className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full text-base font-semibold hover:opacity-90 transition-opacity flex items-center gap-2"
           >
             <Rocket size={18} />
@@ -170,7 +170,7 @@ const Navbar = () => {
             })}
             <li className="pt-2">
               <Link
-                to="/track/SVK-2025-042"
+                to="/tracker"
                 onClick={() => setMobileOpen(false)}
                 className="w-full text-center px-5 py-3 bg-primary text-primary-foreground rounded-md text-base font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
               >
