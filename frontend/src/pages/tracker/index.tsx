@@ -77,7 +77,7 @@ export default function Tracker() {
               <Clock size={14} /> Live Project Tracking
             </div>
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-              Track Your Kitchen Project
+              Track Your Project
             </h1>
             <p className="text-muted-foreground text-lg mb-12">
               Enter the <span className="text-primary font-bold">SVK ID</span> shared with you via WhatsApp to see your project's live status.
